@@ -1,0 +1,33 @@
+doctype html
+
+html
+  
+  head
+    meta(charset='utf-8')
+    title Dendrite example and test
+    
+    // env js
+    script(src='vendor/jquery.js')
+    script(src='vendor/underscore-min.js')
+    
+    // test env
+    script(src='vendor/mocha.js')
+    script(src='vendor/chai.js')
+    link(rel='stylesheet', href = 'vendor/mocha.css')
+
+    // js initiator
+    :coffeescript
+      chai.should()
+      mocha.setup 'bdd'
+      jQuery -> 
+        mocha.run().globals(['Dendrite'])
+        null
+
+    // my own code after stitch
+    script(src='js/dendrite.js')
+    
+    // my test suite
+    script(src='js/dendrite-test.js')   
+  
+  body
+    #mocha
