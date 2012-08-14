@@ -21,6 +21,12 @@ To have some more benefits from Dendrite you should be used #publishAsync() and 
 
 See the examples below or test files.
 
+## Documentation:
+
+See [full documentation](http://meettya.github.com/dendrite/), created by [codo](https://github.com/netzpirat/codo).
+
+Also quick link to module interface docs - [Class: Dendrite](http://meettya.github.com/dendrite/classes/Dendrite.html).
+
 ## Install:
 
     npm install dendrite
