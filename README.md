@@ -1,38 +1,39 @@
-[![Build Status](https://secure.travis-ci.org/Meettya/whet.observer.png)](http://travis-ci.org/Meettya/whet.observer)
+[![Build Status](https://secure.travis-ci.org/Meettya/dendrite.png)](http://travis-ci.org/Meettya/dendrite)
 
-# whet.observer
+# dendrite
 
-A standalone Observer that actually works on node.js, adapted from Publish/Subscribe plugin for jQuery.
+An extended Observer pattern implementation, (must)worked at any JavaScript environment.
 
-Oh! Yes, it works in browser too, just connect undercore above. See test_browser folder for detail or [jsfiddle example](http://jsfiddle.net/Meettya/r5XkG/embedded/result/)
+It designed to simplify creation of low coupling and high cohesion systems with upgraded Dendrite realization.
 
-And last, but not least - it have asynchronous publishing method #publishAsync()
+Dendrite was created on base of [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin), plus have some unique methods like #publishAsync() and #subscribeGuarded().
 
-Surprise! At now we have a dog! Its name "watchdog" and its lives in #subscribeGuarded(). Its watch on callbacks when they firing. See Readme/tests/example for more.
+Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve [underscore](http://underscorejs.org/) dependency and wrap CommonJS module with any helper, [stitch](https://github.com/sstephenson/stitch) for example. See test_browser folder for detail or [jsfiddle example](http://jsfiddle.net/Meettya/r5XkG/embedded/result/)
+
 
 ## Description:
 
-This script implement Observer pattern in Object Oriented-manner.
+Dendrite, as [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin) successor implement all forerunner methods and may be used as replacement with slightly changes in code.
 
-I find this mush more predictable than one huge global observer.
+Dendrite created to be used as local object, not one huge global observer. Its possible to have any numbers of dendrite objects without any interactions.
 
-Also its allow you to operate to multiple topics just by separating the topic names with a space, as [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin) do it.
+To have some more benefits from Dendrite you should be used #publishAsync() and #subscribeGuarded() methods. These methods may reduce GUI latency and simplify exception handling with callbacks.
 
 See the examples below or test files.
 
 ## Install:
 
-    npm install whet.observer
+    npm install dendrite
 
 ## Usage:
 
 All examples use CoffeeScript, you may use plain JS instead (but why?).
 
 
-At first you must create Observer object to interact with it
+At first you must create Dendrite object to interact with it
     
-    Observer = require 'whet.observer'
-    observer_obj = new Observer
+    Dendrite = require 'dendrite'
+    dendrite_obj = new Dendrite
 
 Constructor have some options on create
 
@@ -49,12 +50,12 @@ The callback function receives two arguments:
   
 Note: #subscribe() returns a 'handle' that can be used to unsubscribe easily
     
-    handle = observer_obj.subscribe("foo", (topic, data) -> console.log data, topic )
+    handle = dendrite_obj.subscribe("foo", (topic, data) -> console.log data, topic )
 
 Subscribe to multiple topics at once
 'foo', 'bar', and 'baz' are three different topics
     
-    handle = observer_obj.subscribe("foo bar baz", (topic, data) -> console.log data, topic )
+    handle = dendrite_obj.subscribe("foo bar baz", (topic, data) -> console.log data, topic )
 
 Subscribe with a context
 Callback now has its this variable assigned to the specified object
@@ -63,22 +64,22 @@ Callback now has its this variable assigned to the specified object
       internal_data: 0
       func: (topic, data) -> console.log data, topic, @internal_data
 
-    handle = observer_obj.subscribe("foo", obj.func, obj)
+    handle = dendrite_obj.subscribe("foo", obj.func, obj)
 
 ### Subscribing with watchdog:
 
 Guarded subscription give as powerful technique to manage errors in subscribed functions
     
-    observer_obj = new Observer verbose : 'silent'
+    dendrite_obj = new Dendrite verbose : 'silent'
 
     callback = (topic, data) -> throw Error "Die at #{topic}"
     watchdog = (err, options) -> 
       console.log "Error string: | #{err} |"
       console.log "Error detail", options
       null
-    handle = observer_obj.subscribeGuarded 'foo', callback, watchdog
+    handle = dendrite_obj.subscribeGuarded 'foo', callback, watchdog
 
-    observer_obj.publish 'foo', 'some data'
+    dendrite_obj.publish 'foo', 'some data'
 
 return to console
 
@@ -96,16 +97,16 @@ Unsubscribe using the handle gained from calling #subscribe().
 The callback that was sent into the #subscribe() call that you retrieved the
 handle from will be unsubscribed from all of the topics subscribed to
     
-    observer_obj.unsubscribe(handle)
+    dendrite_obj.unsubscribe(handle)
 
 Unsubscribe by specifying the topics, callback, and context (if one was
 when subscribed).
 Note: if you use an anonymous in the #subscribe() call, you can retrieve a
 reference to the callback from the handle's 'callback' property
 
-    observer_obj.unsubscribe("foo bar", callback_reference, obj)
+    dendrite_obj.unsubscribe("foo bar", callback_reference, obj)
     # or
-    observer_obj.unsubscribe("foo bar", handle.callback);
+    dendrite_obj.unsubscribe("foo bar", handle.callback);
 
 Using the second syntax is useful if you used an anonymous function and got
 the handle, but don't want to unsubscribe from all of the topics.
@@ -114,7 +115,7 @@ Unsubscribe all callbacks from 1+ topics
 If you skip giving a callback as a parameter, it'll unsubscribe all functions
 from the topic(s) given
     
-    observer_obj.unsubscribe("foo bar")
+    dendrite_obj.unsubscribe("foo bar")
 
 
 ### Publishing:
@@ -125,11 +126,11 @@ parameter empty if you have no particular data to send. The data does not have
 a particular format that it must be in, giving you the flexibility to use it
 in whatever way is appropriate for your application
     
-    observer_obj.publish("foo bar", "This is some data")
+    dendrite_obj.publish("foo bar", "This is some data")
 
 Or you may send task to queue for asynchronous execution (see ./tests for more examples)
 
-    observer_obj.publishAsync("foo bar", "This is some data") 
+    dendrite_obj.publishAsync("foo bar", "This is some data") 
 
 ## General Notes
 
