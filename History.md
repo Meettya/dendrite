@@ -3,3 +3,4 @@
   - Rename module from 'whet.observer' to 'dendrite'
   - Rewrite README
   - Fix all name-dependent part
+  - Add travis
