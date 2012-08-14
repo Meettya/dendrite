@@ -1,1 +1,1 @@
-Just follow to [documentation](http://meettya.github.com/dendrite/).
+Just follow to [documentation](http://meettya.github.com/dendrite/doc/).

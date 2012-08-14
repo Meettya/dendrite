@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
 git checkout master ./doc
-cp -Rf ./doc/* ./
-git rm -rf ./doc >/dev/null
 
 echo 'Docs updated'
