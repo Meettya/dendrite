@@ -2,4 +2,6 @@
 
 git checkout master ./doc
 cp -Rf ./doc/* ./
-rm -R ./doc/
+git rm -rf ./doc >/dev/null
+
+echo 'Docs updated'
