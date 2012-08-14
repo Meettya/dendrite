@@ -4,3 +4,4 @@
   - Rewrite README
   - Fix all name-dependent part
   - Add travis
+  - Update jsfiddle example

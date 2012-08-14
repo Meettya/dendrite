@@ -8,7 +8,7 @@ It designed to simplify creation of low coupling and high cohesion systems with 
 
 Dendrite was created on base of [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin), plus have some unique methods like #publishAsync() and #subscribeGuarded().
 
-Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve [underscore](http://underscorejs.org/) dependency and wrap CommonJS module with any helper, [stitch](https://github.com/sstephenson/stitch) for example. See test_browser folder for detail or [jsfiddle example](http://jsfiddle.net/Meettya/r5XkG/embedded/result/)
+Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve [underscore](http://underscorejs.org/) dependency and wrap CommonJS module with any helper, [stitch](https://github.com/sstephenson/stitch) for example. See test_browser folder for detail or [jsfiddle example](http://jsfiddle.net/Meettya/Zp7QY/embedded/result/)
 
 
 ## Description:
