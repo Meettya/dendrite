@@ -23,9 +23,9 @@ See the examples below or test files.
 
 ## Documentation:
 
-See [full documentation](http://meettya.github.com/dendrite/), created by [codo](https://github.com/netzpirat/codo).
+See [full documentation](http://meettya.github.com/dendrite/doc/), created by [codo](https://github.com/netzpirat/codo).
 
-Also quick link to module interface docs - [Class: Dendrite](http://meettya.github.com/dendrite/classes/Dendrite.html).
+Also quick link to module interface docs - [Class: Dendrite](http://meettya.github.com/dendrite/doc/classes/Dendrite.html).
 
 ## Install:
 
