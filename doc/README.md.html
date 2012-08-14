@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='assets/codo.css' type='text/css'>
+  <script src='assets/codo.js'></script>
+  <script src='assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path=''></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>README.md</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='mixin_list.html'>Mixins</a>
+      <a id='method_list_link' href='method_list.html'>Methods</a>
+      <a id='file_list_link' href='file_list.html'>Files</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <nav class='toc'>
+        <p class='title'>
+          <a class='hide_toc' href='#'>
+            <strong>Table of Contents</strong>
+          </a>
+          <small>
+            (<a class='float_toc' href='#'>left</a>)
+          </small>
+        </p>
+      </nav>
+      <div id='filecontents'>
+        <p><a href="http://travis-ci.org/Meettya/dendrite"><img src="https://secure.travis-ci.org/Meettya/dendrite.png" alt="Build Status"></a>
+
+</p>
+<h1>dendrite</h1>
+<p>An extended Observer pattern implementation, (must)worked at any JavaScript environment.
+
+</p>
+<p>It designed to simplify creation of low coupling and high cohesion systems with upgraded Dendrite realization.
+
+</p>
+<p>Dendrite was created on base of <a href="https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin">JZ-Publish-Subscribe-jQuery-Plugin</a>, plus have some unique methods like #publishAsync() and #subscribeGuarded().
+
+</p>
+<p>Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve <a href="http://underscorejs.org/">underscore</a> dependency and wrap CommonJS module with any helper, <a href="https://github.com/sstephenson/stitch">stitch</a> for example. See test_browser folder for detail or <a href="http://jsfiddle.net/Meettya/r5XkG/embedded/result/">jsfiddle example</a>
+
+
+</p>
+<h2>Description:</h2>
+<p>Dendrite, as <a href="https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin">JZ-Publish-Subscribe-jQuery-Plugin</a> successor implement all forerunner methods and may be used as replacement with slightly changes in code.
+
+</p>
+<p>Dendrite created to be used as local object, not one huge global observer. Its possible to have any numbers of dendrite objects without any interactions.
+
+</p>
+<p>To have some more benefits from Dendrite you should be used #publishAsync() and #subscribeGuarded() methods. These methods may reduce GUI latency and simplify exception handling with callbacks.
+
+</p>
+<p>See the examples below or test files.
+
+</p>
+<h2>Install:</h2>
+<pre><code>npm install dendrite</code></pre>
+<h2>Usage:</h2>
+<p>All examples use CoffeeScript, you may use plain JS instead (but why?).
+
+
+</p>
+<p>At first you must create Dendrite object to interact with it
+
+</p>
+<pre><code>Dendrite = require &#39;dendrite&#39;
+dendrite_obj = new Dendrite</code></pre>
+<p>Constructor have some options on create
+
+</p>
+<pre><code>verbose : [&#39;debug&#39;|&#39;warning&#39;|&#39;error&#39;|&#39;silent&#39;] # verbose levels placed by decrementing</code></pre>
+<h3>Subscribing:</h3>
+<p>Subscribe to a single topic called &#39;foo&#39;
+
+</p>
+<p>The callback function receives two arguments:
+
+</p>
+<ul>
+<li>data: any data that the publisher sent</li>
+<li>topic: the topic that was published to that called the function</li>
+</ul>
+<p>Note: #subscribe() returns a &#39;handle&#39; that can be used to unsubscribe easily
+
+</p>
+<pre><code>handle = dendrite_obj.subscribe(&quot;foo&quot;, (topic, data) -&gt; console.log data, topic )</code></pre>
+<p>Subscribe to multiple topics at once
+&#39;foo&#39;, &#39;bar&#39;, and &#39;baz&#39; are three different topics
+
+</p>
+<pre><code>handle = dendrite_obj.subscribe(&quot;foo bar baz&quot;, (topic, data) -&gt; console.log data, topic )</code></pre>
+<p>Subscribe with a context
+Callback now has its this variable assigned to the specified object
+
+</p>
+<pre><code>obj = 
+  internal_data: 0
+  func: (topic, data) -&gt; console.log data, topic, @internal_data
+
+handle = dendrite_obj.subscribe(&quot;foo&quot;, obj.func, obj)</code></pre>
+<h3>Subscribing with watchdog:</h3>
+<p>Guarded subscription give as powerful technique to manage errors in subscribed functions
+
+</p>
+<pre><code>dendrite_obj = new Dendrite verbose : &#39;silent&#39;
+
+callback = (topic, data) -&gt; throw Error &quot;Die at #{topic}&quot;
+watchdog = (err, options) -&gt; 
+  console.log &quot;Error string: | #{err} |&quot;
+  console.log &quot;Error detail&quot;, options
+  null
+handle = dendrite_obj.subscribeGuarded &#39;foo&#39;, callback, watchdog
+
+dendrite_obj.publish &#39;foo&#39;, &#39;some data&#39;</code></pre>
+<p>return to console
+
+</p>
+<pre><code>Error string: | Error: Die at foo |
+Error detail { topic: &#39;foo&#39;,
+  callback: [Function],
+  object: {},
+  data: [ &#39;some data&#39; ] }</code></pre>
+<p>Now subscribed object MAY decide how support itself errors
+
+</p>
+<h3>Unsubscribing:</h3>
+<p>Unsubscribe using the handle gained from calling #subscribe().
+The callback that was sent into the #subscribe() call that you retrieved the
+handle from will be unsubscribed from all of the topics subscribed to
+
+</p>
+<pre><code>dendrite_obj.unsubscribe(handle)</code></pre>
+<p>Unsubscribe by specifying the topics, callback, and context (if one was
+when subscribed).
+Note: if you use an anonymous in the #subscribe() call, you can retrieve a
+reference to the callback from the handle&#39;s &#39;callback&#39; property
+
+</p>
+<pre><code>dendrite_obj.unsubscribe(&quot;foo bar&quot;, callback_reference, obj)
+# or
+dendrite_obj.unsubscribe(&quot;foo bar&quot;, handle.callback);</code></pre>
+<p>Using the second syntax is useful if you used an anonymous function and got
+the handle, but don&#39;t want to unsubscribe from all of the topics.
+
+</p>
+<p>Unsubscribe all callbacks from 1+ topics
+If you skip giving a callback as a parameter, it&#39;ll unsubscribe all functions
+from the topic(s) given
+
+</p>
+<pre><code>dendrite_obj.unsubscribe(&quot;foo bar&quot;)</code></pre>
+<h3>Publishing:</h3>
+<p>Publish to a topic (or topics)
+When you publish, you may send data to the subscribers, or you can leave the
+parameter empty if you have no particular data to send. The data does not have
+a particular format that it must be in, giving you the flexibility to use it
+in whatever way is appropriate for your application
+
+</p>
+<pre><code>dendrite_obj.publish(&quot;foo bar&quot;, &quot;This is some data&quot;)</code></pre>
+<p>Or you may send task to queue for asynchronous execution (see ./tests for more examples)
+
+</p>
+<pre><code>dendrite_obj.publishAsync(&quot;foo bar&quot;, &quot;This is some data&quot;) </code></pre>
+<h2>General Notes</h2>
+<h3>Topics:</h3>
+<p>Topics can use any name that can also be used as a property name. Since the
+topic is always retrieved using the bracket notation (e.g. object[&quot;prop&quot;]), as
+opposed to the dot notation (e.g. object.prop), you are allowed to use a large
+numbers of characters that aren&#39;t legal for variable names, such as slashes (&quot;/&quot;)
+or periods (&quot;.&quot;). You cannot, however, use a space (&quot; &quot;) because this is the 
+character that separates multiple topics.
+All three functions (subscribe, unsubscribe, and publish) are able to take one
+or multiple topics (separated by a space).
+
+</p>
+<h3>Callback Context:</h3>
+<p>When a callback function is invoked, it is called in the context of blank object.
+This means that <code> this === {} </code> inside of your function.
+You may use you own object instead, passed it as context object.
+
+</p>
+<h3>Handle:</h3>
+<p>The handle that is returned from the #subscribe() function is simply an object
+with three properties, named &quot;topics&quot;, &quot;callback&quot;, and &quot;context&quot; that correspond
+to the three parameters that you sent in (or context will be a blank object if
+no context was provided):
+
+</p>
+<pre><code>handle =
+  topics : &quot;the topics you sent in&quot;
+  callback : (topic, data)-&gt; 
+    // this is the callback function you sent in
+  context : contextObjYouSentIn || {}</code></pre>
+<h3>Callback Topic Argument:</h3>
+<p>The first argument that the callback receives is the topic in which the
+function was subscribed and invoked from. This will always be a string
+containing only one topic, even if the #publish() function is called with
+multiple topics because the callback will be run once for each individual
+topic that is published.
+
+</p>
+<h2>Need you help!</h2>
+<p>If you feel ability to translate good Russain README (I&#39;m add it soon) to correct English - please, ping me. Thanks in advance!
+</p>
+
+      </div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Aug 14 2012 05:18:47 GMT+0400 (MSK)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.2.0
+  (Node.js v0.8.6).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

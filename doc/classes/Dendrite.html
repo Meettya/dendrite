@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../assets/codo.css' type='text/css'>
+  <script src='../assets/codo.js'></script>
+  <script src='../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Dendrite</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../mixin_list.html'>Mixins</a>
+      <a id='method_list_link' href='../method_list.html'>Methods</a>
+      <a id='file_list_link' href='../file_list.html'>Files</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Dendrite
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src/dendrite.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p><strong>dendrite</strong> - An extended Observer pattern implementation, worked at any JavaScript environment. </p> <p><strong>GitHub repository</strong> <a href="https://github.com/Meettya/dendrite">dendrite</a> </p> <p>Thanks to <a href="http://www.joezimjs.com">Joe Zim</a> for original <a href="http://www.joezimjs.com/projects/publish-subscribe-jquery-plugin/">Publish/Subscribe plugin</a> for jQuery  </p> 
+</div>
+<div class='tags'>
+  <h3>Author:</h3>
+  <ul class='author'>
+    <li>
+      Dmitrii Karpich  
+    </li>
+  </ul>
+  <h3>Copyright:</h3>
+  <ul class='copyright'>
+    <li>
+      Dmitrii Karpich (c) 2012 under MIT Licence  
+    </li>
+  </ul>
+  <h3>Version:</h3>
+  <ul class='version'>
+    <li>
+      v0.5.1
+    </li>
+  </ul>
+</div>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='DEBUG-constant'>
+          DEBUG
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>3</code></pre>
+        </dd>
+        <dt id='WARNING-constant'>
+          WARNING
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>2</code></pre>
+        </dd>
+        <dt id='ERROR-constant'>
+          ERROR
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>1</code></pre>
+        </dd>
+        <dt id='SILENT-constant'>
+          SILENT
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>0</code></pre>
+        </dd>
+      </dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(options = {})
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Construct a new Dendrite.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#subscribe-instance'>
+        - (Object) <strong>subscribe</strong>(topics, callback, context = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Subscribe to topic(s).
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#subscribeGuarded-instance'>
+        - (Object) <strong>subscribeGuarded</strong>(topics, callback, watchdog, context = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Subscribe to topic(s) with 'watchdog' function to handle errors here, in subscriber.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unsubscribe-instance'>
+        - (Object) <strong>unsubscribe</strong>(topics, callback, context)
+      </a>
+    </span>
+    <span class='desc'>
+      Unsubscribe from topic(s) or remove all subscribers from topic(s).
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#publish-instance'>
+        - (Object) <strong>publish</strong>(topics, data...)
+      </a>
+    </span>
+    <span class='desc'>
+      Synchronously publish any data to topic(s).
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#publishSync-instance'>
+        - (Object) <strong>publishSync</strong>(topics, data...)
+      </a>
+    </span>
+    <span class='desc'>
+      Alias for <a href='../classes/Dendrite.html#publish-instance'>#publish</a>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#publishAsync-instance'>
+        - (Object) <strong>publishAsync</strong>(topics, data...)
+      </a>
+    </span>
+    <span class='desc'>
+      Asynchronously publish any data to topic(s).
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>()
+      <br>
+      - (void) <strong>constructor</strong>(options)
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Construct a new Dendrite. </p> 
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      
+    </h4>
+    <pre><code class='coffee'>dendrite_obj = new Dendrite verbose : &#39;warning&#39;</code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <div class='overloads'>
+    <h3>Overloads:</h3>
+    <div class='overload'>
+      <p class='signature'>
+        - (void) <strong>constructor</strong>()
+      </p>
+      <div class='docstring'>
+  <p>Construct new Dendrite with default options</p> 
+</div>
+<div class='tags'>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (void) <strong>constructor</strong>(options)
+      </p>
+      <div class='docstring'>
+  <p>Constrict new Dendrite with settings</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>options</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (options):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>verbose</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>verbose level, may be [ 'debug' | 'warning' | 'error' | 'silent' ]</span>
+    </li>
+  </ul>
+</div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='subscribe-instance'>
+      - (Object) <strong>subscribe</strong>(topics, callback)
+      <br>
+      - (Object) <strong>subscribe</strong>(topics, callback, context)
+      <br>
+    </p>
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    The 'callback' function receives 'topic' [String] as first argument and 'data' [Any] as any data that the publisher sent
+  </div>
+  <p>Subscribe to topic(s). </p> 
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      
+    </h4>
+    <pre><code class='coffee'>handler = dendrite_obj.subscribe &#39;foo&#39;, (topic, data...) -&gt; console.log data, topic</code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments</span>
+    </li>
+  </ul>
+  <div class='overloads'>
+    <h3>Overloads:</h3>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>subscribe</strong>(topics, callback)
+      </p>
+      <div class='docstring'>
+  <p>Subscribe to topic(s) without context</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to subscribe to</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be called when the given topic(s) is published to</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>subscribe</strong>(topics, callback, context)
+      </p>
+      <div class='docstring'>
+  <p>Subscribe to topic(s) with context</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to subscribe to</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be called when the given topic(s) is published to</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an object to call the function on</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='subscribeGuarded-instance'>
+      - (Object) <strong>subscribeGuarded</strong>(topics, callback, watchdog)
+      <br>
+      - (Object) <strong>subscribeGuarded</strong>(topics, callback, watchdog, context)
+      <br>
+    </p>
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    The 'callback' function receives 'topic' [String] as first argument and 'data' [Any] as any data that the publisher sent
+  </div>
+  <div class='note'>
+    <strong>Note:</strong>
+    The 'watchdog' function receives two arguments: 'err' [Error] and 'options' [Object] as all 'callback' properties
+  </div>
+  <p>Subscribe to topic(s) with &#39;watchdog&#39; function to handle errors here, in subscriber. </p> 
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      
+    </h4>
+    <pre><code class='coffee'>context_object = 
+  name : &#39;Context Object&#39;
+  callback : (topic, data) -&gt; throw Error &quot;Die at #{topic}&quot;
+  watchdog : (err, options) -&gt; 
+    console.log &quot;Error in | #{@name} |&quot;
+    console.log &quot;Error string: | #{err} |&quot;
+    console.log &quot;Error detail&quot;, options
+    null  
+
+handler = dendrite_obj.subscribeGuarded &#39;foo&#39;, context_object.callback, context_object.watchdog, context_object</code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>handler { topics: topics, callback: callback, watchdog: watchdog, context: context } or throw exception on invalid arguments</span>
+    </li>
+  </ul>
+  <h3>See also:</h3>
+  <ul class='see'>
+    <li>
+      <a href='../classes/Dendrite.html#subscribe-instance'>#subscribe</a>
+    </li>
+  </ul>
+  <div class='overloads'>
+    <h3>Overloads:</h3>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>subscribeGuarded</strong>(topics, callback, watchdog)
+      </p>
+      <div class='docstring'>
+  <p>Subscribe with &#39;watchdog&#39; without context</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to subscribe to</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be called when the given topic(s) is published to</span>
+    </li>
+    <li>
+      <span class='name'>watchdog</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be called when callback under publishing topic rise exception</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>subscribeGuarded</strong>(topics, callback, watchdog, context)
+      </p>
+      <div class='docstring'>
+  <p>Subscribe with &#39;watchdog&#39; with context</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to subscribe to</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be called when the given topic(s) is published to</span>
+    </li>
+    <li>
+      <span class='name'>watchdog</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be called when callback under publishing topic rise exception</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an object to call the function on</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unsubscribe-instance'>
+      - (Object) <strong>unsubscribe</strong>(topics)
+      <br>
+      - (Object) <strong>unsubscribe</strong>(topics, callback)
+      <br>
+      - (Object) <strong>unsubscribe</strong>(topics, callback, context)
+      <br>
+      - (Object) <strong>unsubscribe</strong>(handler)
+      <br>
+    </p>
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    Unsubscriptions may be placed to queue if Dendrite do some publish tasks   and restarted to unsubscribe when all publish tasks is done.
+  </div>
+  <p>Unsubscribe from topic(s) or remove all subscribers from topic(s). </p> 
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      
+    </h4>
+    <pre><code class='coffee'># unsubscribe &#39;obj&#39; from topics &#39;foo bar&#39;
+dendrite_obj.unsubscribe &#39;foo bar&#39;, callback_reference, obj
+# remove all subscribers from topics &#39;bar baz&#39;
+dendrite_obj.unsubscribe &#39;bar baz&#39;</code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>*this* for chaining</span>
+    </li>
+  </ul>
+  <div class='overloads'>
+    <h3>Overloads:</h3>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>unsubscribe</strong>(topics)
+      </p>
+      <div class='docstring'>
+  <p>Remove <strong>all</strong> subscriptions from topic(s) </p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to unsubscribe from</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>unsubscribe</strong>(topics, callback)
+      </p>
+      <div class='docstring'>
+  <p>Remove subscriptions for callback from topic(s) if no context used in the #subscribe() call</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to unsubscribe from</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be removed from the topics subscription list</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>unsubscribe</strong>(topics, callback, context)
+      </p>
+      <div class='docstring'>
+  <p>Remove subscriptions for callback and given context object from topic(s) </p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to unsubscribe from</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be removed from the topics subscription list</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>object that was used as the context in the #subscribe() call</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>unsubscribe</strong>(handler)
+      </p>
+      <div class='docstring'>
+  <p>Remove subscriptions with <em>handler</em> object. May be usefully if subscription created with anonymous &#39;callback&#39; </p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>handler</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>subscription handler, returned by #subscribeX() method</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (handler):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to unsubscribe from</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to be removed from the topics subscription list</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>object that was used as the context in the #subscribe() call</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='publish-instance'>
+      - (Object) <strong>publish</strong>(topics)
+      <br>
+      - (Object) <strong>publish</strong>(topics, data...)
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Synchronously publish any data to topic(s). </p> 
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      
+    </h4>
+    <pre><code class='coffee'>dendrite_obj.publish &#39;foo bar&#39;, &#39;This is some data&#39;</code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>*this* for chaining</span>
+    </li>
+  </ul>
+  <div class='overloads'>
+    <h3>Overloads:</h3>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>publish</strong>(topics)
+      </p>
+      <div class='docstring'>
+  <p>Do publish to topics without any data</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to publish to</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+    <div class='overload'>
+      <p class='signature'>
+        - (Object) <strong>publish</strong>(topics, data...)
+      </p>
+      <div class='docstring'>
+  <p>Do publish with some data to topics</p> 
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>topics</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>1 or more topic names, separated by a space, to publish to</span>
+    </li>
+    <li>
+      <span class='name'>data</span>
+      <span class='type'>
+        (<tt>Any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>any kind of data(s) you wish to give to the subscribers</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'></span>
+    </li>
+  </ul>
+</div>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='publishSync-instance'>
+      - (Object) <strong>publishSync</strong>(topics, data...)
+    </p>
+    <div class='docstring'>
+  <p>Alias for <a href='../classes/Dendrite.html#publish-instance'>#publish</a> </p> 
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>*this* for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='publishAsync-instance'>
+      - (Object) <strong>publishAsync</strong>(topics, data...)
+    </p>
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    Used exactly as <a href='../classes/Dendrite.html#publish-instance'>#publish</a>, but this method puts task to queue and will returns immediately 
+  </div>
+  <p>Asynchronously publish any data to topic(s). </p> <p>See <a href='../classes/Dendrite.html#publish-instance'>#publish</a> for all info </p> 
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      
+    </h4>
+    <pre><code class='coffee'>dendrite_obj.publishAsync &#39;foo bar&#39;, &#39;This is some data&#39;</code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>*this* for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Aug 14 2012 05:18:47 GMT+0400 (MSK)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.2.0
+  (Node.js v0.8.6).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
