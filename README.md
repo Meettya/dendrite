@@ -33,7 +33,7 @@ Also quick link to module interface docs - [Class: Dendrite](http://meettya.gith
 
 ## Usage:
 
-All examples use CoffeeScript, you may use plain JS instead (but why?).
+All examples written in CoffeeScript, you may use plain JS instead (but why?).
 
 
 At first you must create Dendrite object to interact with it
