@@ -108,47 +108,48 @@
         </p>
       </nav>
       <div id='filecontents'>
-        <p><a href="http://travis-ci.org/Meettya/whet.observer"><img src="https://secure.travis-ci.org/Meettya/whet.observer.png" alt="Build Status"></a>
+        <p><a href="http://travis-ci.org/Meettya/dendrite"><img src="https://secure.travis-ci.org/Meettya/dendrite.png" alt="Build Status"></a>
 
 </p>
-<h1>whet.observer</h1>
-<p>A standalone Observer that actually works on node.js, adapted from Publish/Subscribe plugin for jQuery.
+<h1>dendrite</h1>
+<p>An extended Observer pattern implementation, (must)worked at any JavaScript environment.
 
 </p>
-<p>Oh! Yes, it works in browser too, just connect undercore above. See test_browser folder for detail or <a href="http://jsfiddle.net/Meettya/r5XkG/embedded/result/">jsfiddle example</a>
+<p>It designed to simplify creation of low coupling and high cohesion systems with upgraded Dendrite realization.
 
 </p>
-<p>And last, but not least - it have asynchronous publishing method #publishAsync()
+<p>Dendrite was created on base of <a href="https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin">JZ-Publish-Subscribe-jQuery-Plugin</a>, plus have some unique methods like #publishAsync() and #subscribeGuarded().
 
 </p>
-<p>Surprise! At now we have a dog! Its name &quot;watchdog&quot; and its lives in #subscribeGuarded(). Its watch on callbacks when they firing. See Readme/tests/example for more.
+<p>Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve <a href="http://underscorejs.org/">underscore</a> dependency and wrap CommonJS module with any helper, <a href="https://github.com/sstephenson/stitch">stitch</a> for example. See test_browser folder for detail or <a href="http://jsfiddle.net/Meettya/r5XkG/embedded/result/">jsfiddle example</a>
+
 
 </p>
 <h2>Description:</h2>
-<p>This script implement Observer pattern in Object Oriented-manner.
+<p>Dendrite, as <a href="https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin">JZ-Publish-Subscribe-jQuery-Plugin</a> successor implement all forerunner methods and may be used as replacement with slightly changes in code.
 
 </p>
-<p>I find this mush more predictable than one huge global observer.
+<p>Dendrite created to be used as local object, not one huge global observer. Its possible to have any numbers of dendrite objects without any interactions.
 
 </p>
-<p>Also its allow you to operate to multiple topics just by separating the topic names with a space, as <a href="https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin">JZ-Publish-Subscribe-jQuery-Plugin</a> do it.
+<p>To have some more benefits from Dendrite you should be used #publishAsync() and #subscribeGuarded() methods. These methods may reduce GUI latency and simplify exception handling with callbacks.
 
 </p>
 <p>See the examples below or test files.
 
 </p>
 <h2>Install:</h2>
-<pre><code>npm install whet.observer</code></pre>
+<pre><code>npm install dendrite</code></pre>
 <h2>Usage:</h2>
 <p>All examples use CoffeeScript, you may use plain JS instead (but why?).
 
 
 </p>
-<p>At first you must create Observer object to interact with it
+<p>At first you must create Dendrite object to interact with it
 
 </p>
-<pre><code>Observer = require &#39;whet.observer&#39;
-observer_obj = new Observer</code></pre>
+<pre><code>Dendrite = require &#39;dendrite&#39;
+dendrite_obj = new Dendrite</code></pre>
 <p>Constructor have some options on create
 
 </p>
@@ -167,12 +168,12 @@ observer_obj = new Observer</code></pre>
 <p>Note: #subscribe() returns a &#39;handle&#39; that can be used to unsubscribe easily
 
 </p>
-<pre><code>handle = observer_obj.subscribe(&quot;foo&quot;, (topic, data) -&gt; console.log data, topic )</code></pre>
+<pre><code>handle = dendrite_obj.subscribe(&quot;foo&quot;, (topic, data) -&gt; console.log data, topic )</code></pre>
 <p>Subscribe to multiple topics at once
 &#39;foo&#39;, &#39;bar&#39;, and &#39;baz&#39; are three different topics
 
 </p>
-<pre><code>handle = observer_obj.subscribe(&quot;foo bar baz&quot;, (topic, data) -&gt; console.log data, topic )</code></pre>
+<pre><code>handle = dendrite_obj.subscribe(&quot;foo bar baz&quot;, (topic, data) -&gt; console.log data, topic )</code></pre>
 <p>Subscribe with a context
 Callback now has its this variable assigned to the specified object
 
@@ -181,21 +182,21 @@ Callback now has its this variable assigned to the specified object
   internal_data: 0
   func: (topic, data) -&gt; console.log data, topic, @internal_data
 
-handle = observer_obj.subscribe(&quot;foo&quot;, obj.func, obj)</code></pre>
+handle = dendrite_obj.subscribe(&quot;foo&quot;, obj.func, obj)</code></pre>
 <h3>Subscribing with watchdog:</h3>
 <p>Guarded subscription give as powerful technique to manage errors in subscribed functions
 
 </p>
-<pre><code>observer_obj = new Observer verbose : &#39;silent&#39;
+<pre><code>dendrite_obj = new Dendrite verbose : &#39;silent&#39;
 
 callback = (topic, data) -&gt; throw Error &quot;Die at #{topic}&quot;
 watchdog = (err, options) -&gt; 
   console.log &quot;Error string: | #{err} |&quot;
   console.log &quot;Error detail&quot;, options
   null
-handle = observer_obj.subscribeGuarded &#39;foo&#39;, callback, watchdog
+handle = dendrite_obj.subscribeGuarded &#39;foo&#39;, callback, watchdog
 
-observer_obj.publish &#39;foo&#39;, &#39;some data&#39;</code></pre>
+dendrite_obj.publish &#39;foo&#39;, &#39;some data&#39;</code></pre>
 <p>return to console
 
 </p>
@@ -213,16 +214,16 @@ The callback that was sent into the #subscribe() call that you retrieved the
 handle from will be unsubscribed from all of the topics subscribed to
 
 </p>
-<pre><code>observer_obj.unsubscribe(handle)</code></pre>
+<pre><code>dendrite_obj.unsubscribe(handle)</code></pre>
 <p>Unsubscribe by specifying the topics, callback, and context (if one was
 when subscribed).
 Note: if you use an anonymous in the #subscribe() call, you can retrieve a
 reference to the callback from the handle&#39;s &#39;callback&#39; property
 
 </p>
-<pre><code>observer_obj.unsubscribe(&quot;foo bar&quot;, callback_reference, obj)
+<pre><code>dendrite_obj.unsubscribe(&quot;foo bar&quot;, callback_reference, obj)
 # or
-observer_obj.unsubscribe(&quot;foo bar&quot;, handle.callback);</code></pre>
+dendrite_obj.unsubscribe(&quot;foo bar&quot;, handle.callback);</code></pre>
 <p>Using the second syntax is useful if you used an anonymous function and got
 the handle, but don&#39;t want to unsubscribe from all of the topics.
 
@@ -232,7 +233,7 @@ If you skip giving a callback as a parameter, it&#39;ll unsubscribe all function
 from the topic(s) given
 
 </p>
-<pre><code>observer_obj.unsubscribe(&quot;foo bar&quot;)</code></pre>
+<pre><code>dendrite_obj.unsubscribe(&quot;foo bar&quot;)</code></pre>
 <h3>Publishing:</h3>
 <p>Publish to a topic (or topics)
 When you publish, you may send data to the subscribers, or you can leave the
@@ -241,11 +242,11 @@ a particular format that it must be in, giving you the flexibility to use it
 in whatever way is appropriate for your application
 
 </p>
-<pre><code>observer_obj.publish(&quot;foo bar&quot;, &quot;This is some data&quot;)</code></pre>
+<pre><code>dendrite_obj.publish(&quot;foo bar&quot;, &quot;This is some data&quot;)</code></pre>
 <p>Or you may send task to queue for asynchronous execution (see ./tests for more examples)
 
 </p>
-<pre><code>observer_obj.publishAsync(&quot;foo bar&quot;, &quot;This is some data&quot;) </code></pre>
+<pre><code>dendrite_obj.publishAsync(&quot;foo bar&quot;, &quot;This is some data&quot;) </code></pre>
 <h2>General Notes</h2>
 <h3>Topics:</h3>
 <p>Topics can use any name that can also be used as a property name. Since the
@@ -292,7 +293,7 @@ topic that is published.
     </div>
     <div id='footer'>
   Generated on
-  Tue Aug 14 2012 02:36:35 GMT+0400 (MSK)
+  Tue Aug 14 2012 05:18:47 GMT+0400 (MSK)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.2.0
