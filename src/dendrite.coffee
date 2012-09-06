@@ -394,6 +394,9 @@ module.exports = class Dendrite
   @private
   ###
   _unsubscribeResume: ->
+    # its unimportant if unsubscribe queue is empty
+    return unless @_unsubscribe_queue_.length
+
     if @_isPublishing()
       if @_observer_verbose_level_ >= DEBUG
         console?.log 'still publishing'
