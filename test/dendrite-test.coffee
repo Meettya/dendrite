@@ -6,7 +6,7 @@ Its so wrong, but its OK for test
 Dendrite = if GLOBAL?.lib_path
     require "#{lib_path}dendrite"
   else
-    require '../lib/dendrite'
+    require '..'
 
 describe 'Dendrite:', ->
   
