@@ -3,9 +3,10 @@ Test suite for node AND browser in one file
 So, we are need some data from global
 Its so wrong, but its OK for test
 ###
-lib_path = GLOBAL?.lib_path || ''
-
-Dendrite = require "#{lib_path}dendrite"
+Dendrite = if GLOBAL?.lib_path
+    require "#{lib_path}dendrite"
+  else
+    require '../lib/dendrite'
 
 describe 'Dendrite:', ->
   

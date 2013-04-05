@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/Meettya/dendrite.png)](http://travis-ci.org/Meettya/dendrite)
+[![Build Status](https://secure.travis-ci.org/Meettya/dendrite.png)](http://travis-ci.org/Meettya/dendrite)  [![Dependency Status](https://gemnasium.com/Meettya/dendrite.png)](https://gemnasium.com/Meettya/dendrite)
 
 # dendrite
 

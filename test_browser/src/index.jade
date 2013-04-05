@@ -8,7 +8,7 @@ html
     
     // env js
     script(src='vendor/jquery.js')
-    script(src='vendor/underscore-min.js')
+    script(src='vendor/lodash-1.0.0-rc.1.min.js')
     
     // test env
     script(src='vendor/mocha.js')
@@ -22,9 +22,6 @@ html
       jQuery -> 
         mocha.run().globals(['Dendrite'])
         null
-
-    // my own code after stitch
-    script(src='js/dendrite.js')
     
     // my test suite
     script(src='js/dendrite-test.js')   
