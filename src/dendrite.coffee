@@ -1,5 +1,5 @@
-# resolve require from [window] or by require() 
-_ = @_ ? require 'underscore'
+# get fastest
+_ = require 'lodash'
 
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
@@ -119,7 +119,7 @@ module.exports = class Dendrite
       @_subscriptions_[topic] or= []
       @_subscriptions_[topic].push task_number
       
-    { topics: topics, callback: callback, watchdog: watchdog, context: context }
+    { topics, callback, watchdog, context }
 
   ###
   Unsubscribe from topic(s) or remove all subscribers from topic(s).
