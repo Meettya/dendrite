@@ -1,35 +1,36 @@
 {
-    "name": "dendrite",
-    "version": "0.5.1",
-    "description": "An extended Observer pattern implementation, worked at any JavaScript environment",
-    "keywords": [
-        "observer",
-        "publish",
-        "subscribe",
-        "task",
-        "async"
-    ],
-    "author": "Dmitrii Karpich <meettya@gmail.com>",
-    "dependencies": {
-        "underscore": ">=1.3.3"
-    },
-    "devDependencies": {
-        "coffee-script": ">=1.3.3",
-        "chai": "latest",
-        "mocha": "latest",
-        "jade": "latest",
-        "stitch": "latest"
-    },
-    "scripts": {
-        "test": "cake test"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Meettya/dendrite.git"
-    },
-    "main": "index.js",
-    "engines": {
-        "node": ">=0.6.0"
-    },
-    "license": "MIT"
+  "name": "dendrite",
+  "version": "0.5.7",
+  "description": "An extended Observer pattern implementation, worked at any JavaScript environment",
+  "keywords": [
+    "observer",
+    "publish",
+    "subscribe",
+    "task",
+    "async"
+  ],
+  "author": "Dmitrii Karpich <meettya@gmail.com>",
+  "dependencies": {
+    "lodash": "*"
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "chai": "*",
+    "mocha": "*",
+    "jade": "*",
+    "stitch": "*",
+    "clinch": "*"
+  },
+  "scripts": {
+    "test": "cake test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Meettya/dendrite.git"
+  },
+  "main": "./lib/dendrite",
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "license": "MIT"
 }

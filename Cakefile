@@ -1,8 +1,11 @@
-fs                = require 'fs'
-CoffeeScript      = require 'coffee-script'
-{spawn, exec}     = require 'child_process'
-Stitch            = require 'stitch'
+###
+This Cakefile for dendrite suport
+###
 
+fs                = require 'fs'
+path              = require 'path'
+{spawn, exec}     = require 'child_process'
+Clinch            = require 'clinch'
 
 # ANSI Terminal Colors.
 enableColors = no
@@ -45,6 +48,32 @@ jade = (args, cb) ->
     process.exit(1) if status != 0
     cb() if typeof cb is 'function'  
 
+# this function will create package on the fly
+clinch_on_the_fly = (cb) ->
+  
+  pack_config = 
+    bundle : 
+      dendrite : "#{__dirname}"
+    replacement :
+      lodash : path.join __dirname, "web_modules", "lodash"
+
+  # its our packer
+  packer = new Clinch
+  packer.buldPackage 'dendrite_package', pack_config, cb
+
+# this function will create test package on the fly
+clinch_test_on_the_fly = (cb) ->
+  
+  pack_config = 
+    bundle : 
+      dendrite_test : path.join __dirname, "test", "dendrite-test"
+    replacement :
+      lodash : path.join __dirname, "web_modules", "lodash"
+
+  # nothing to inject here
+  packer = new Clinch inject : off
+  packer.buldPackage 'test_suite', pack_config, cb
+
 task 'build', 'build module from source', build = (cb) ->
   files = fs.readdirSync 'src'
   files = ('src/' + file for file in files when file.match(/\.coffee$/))
@@ -64,22 +93,30 @@ task 'build_test_browser_page', 'build test html for browser', build_test_browse
     log ' -> build test html for browser done', green
   cb() if typeof cb is 'function'
 
-task 'build_browser_comp_js', 'build browser-compatibility module with stitch', build_browser_comp_js = (cb) ->
+task 'build_browser_comp_js', 'build browser-compatibility module with clinch', build_browser_comp_js = (cb) ->
   my_res_filename = __dirname + '/test_browser/js/dendrite.js'
-  my_package = Stitch.createPackage(
-    paths: [ __dirname + '/src']
-  )
-  my_package.compile (err, source) ->
-  	fs.writeFile my_res_filename, source, encoding='utf8', (err) ->
-  		throw err if err?
-  		log ' -> lib compiled', green
-  cb() if typeof cb is 'function'
+
+  clinch_on_the_fly (err, data) ->
+    if err
+      log "Builder, err: #{err}", red
+    else
+      fs.writeFile my_res_filename, data, 'utf8', (err) ->
+        throw err if err?
+        log ' -> lib compiled', green
+  
+  cb() if typeof cb is 'function'  	
    
 task 'build_test_browser_js', 'build test js for browser', build_test_browser_js = (cb) ->
-  files = fs.readdirSync 'test'
-  files = ('test/' + file for file in files when file.match(/\.coffee$/))
-  run ['-c', '-o', 'test_browser/js/'].concat(files), ->
-    log ' -> build test js for browser done', green
+  my_res_filename = __dirname + '/test_browser/js/dendrite-test.js'
+
+  clinch_test_on_the_fly (err, data) ->
+    if err
+      log "Builder, err: #{err}", red
+    else
+      fs.writeFile my_res_filename, data, 'utf8', (err) ->
+        throw err if err?
+        log ' -> test suite compiled', green   
+
   cb() if typeof cb is 'function'
 
 task 'build_test_browser', 'build test browser suite', ->

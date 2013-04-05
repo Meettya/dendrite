@@ -5,14 +5,13 @@
     <title>Dendrite example and test</title>
     <!-- env js-->
     <script src="vendor/jquery.js"></script>
-    <script src="vendor/underscore-min.js"></script>
+    <script src="vendor/lodash-1.0.0-rc.1.min.js"></script>
     <!-- test env-->
     <script src="vendor/mocha.js"></script>
     <script src="vendor/chai.js"></script>
     <link rel="stylesheet" href="vendor/mocha.css">
     <!-- js initiator--><script type="text/javascript">
 (function() {
-
   chai.should();
 
   mocha.setup('bdd');
@@ -24,8 +23,6 @@
 
 }).call(this);
 </script>
-    <!-- my own code after stitch-->
-    <script src="js/dendrite.js"></script>
     <!-- my test suite-->
     <script src="js/dendrite-test.js">  </script>
   </head>
