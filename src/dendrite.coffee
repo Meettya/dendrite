@@ -4,7 +4,7 @@ _ = @_ ? require 'underscore'
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
 
-@version v0.5.1
+@version v0.5.5
 @author Dmitrii Karpich  
 @copyright Dmitrii Karpich (c) 2012 under MIT Licence  
 **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
@@ -394,6 +394,9 @@ module.exports = class Dendrite
   @private
   ###
   _unsubscribeResume: ->
+    # its unimportant if unsubscribe queue is empty
+    return unless @_unsubscribe_queue_.length
+
     if @_isPublishing()
       if @_observer_verbose_level_ >= DEBUG
         console?.log 'still publishing'
@@ -443,14 +446,11 @@ module.exports = class Dendrite
   @return [Object] Error
   ###
   _publishErrorMessage: (topics, data) ->
-    { 
-      name : "TypeError"
-      message : """
-                Error on call |publish| used non-string topics:
-                  topics  = |#{topics}|
-                  data    = |#{data?.join ', '}|
-                """
-    }
+    new TypeError """
+                  Error on call |publish| used non-string topics:
+                    topics  = |#{topics}|
+                    data    = |#{data?.join ', '}|
+                  """
 
   ###
   Internal method for unsubscribe error message constructor
@@ -458,15 +458,12 @@ module.exports = class Dendrite
   @return [Object] Error
   ###
   _unsubscribeErrorMessage: (topics, callback, context) ->
-    {
-      name : "TypeError"
-      message : """
-                Error on call |unsubscribe| used non-string topics:
-                  topics    = |#{topics}|
-                  callback  = |#{callback}|
-                  context   = |#{context}|
-                """
-    }
+    new TypeError """
+                  Error on call |unsubscribe| used non-string topics:
+                    topics    = |#{topics}|
+                    callback  = |#{callback}|
+                    context   = |#{context}|
+                  """
   
   ###  
   Internal method for subscribe error message constructor
@@ -474,16 +471,13 @@ module.exports = class Dendrite
   @return [Object] Error
   ###
   _subscribeErrorMessage: (topics, callback, watchdog, context) ->
-    {
-      name : "TypeError"
-      message : """
-                Error! on call |subscribe| used non-string topics OR/AND callback isn`t function OR/AND watchdog defined but isn`t function:
-                  topics    = |#{topics}|
-                  callback  = |#{callback}|
-                  watchdog  = |#{watchdog}|
-                  context   = |#{context}|
-                """
-    }
+    new TypeError """
+                  Error! on call |subscribe| used non-string topics OR/AND callback isn`t function OR/AND watchdog defined but isn`t function:
+                    topics    = |#{topics}|
+                    callback  = |#{callback}|
+                    watchdog  = |#{watchdog}|
+                    context   = |#{context}|
+                  """
 
   ###
   Internal method for error message from verbose level parser
@@ -491,9 +485,6 @@ module.exports = class Dendrite
   @return [Object] Error
   ###
   _parseVerboseLevelError: (level) ->
-    {
-      name : "TypeError"
-      message : "Error on parsing verbose level - not a String |#{level}|"
-    }
+    new TypeError "Error on parsing verbose level - not a String |#{level}|"
 
     

@@ -57,7 +57,7 @@
   /*
   **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
   
-  @version v0.5.1
+  @version v0.5.5
   @author Dmitrii Karpich  
   @copyright Dmitrii Karpich (c) 2012 under MIT Licence  
   **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
@@ -550,6 +550,9 @@
 
     Dendrite.prototype._unsubscribeResume = function() {
       var task, _base;
+      if (!this._unsubscribe_queue_.length) {
+        return;
+      }
       if (this._isPublishing()) {
         if (this._observer_verbose_level_ >= DEBUG) {
           if (typeof console !== "undefined" && console !== null) {
@@ -607,10 +610,7 @@
 
 
     Dendrite.prototype._publishErrorMessage = function(topics, data) {
-      return {
-        name: "TypeError",
-        message: "Error on call |publish| used non-string topics:\n  topics  = |" + topics + "|\n  data    = |" + (data != null ? data.join(', ') : void 0) + "|"
-      };
+      return new TypeError("Error on call |publish| used non-string topics:\n  topics  = |" + topics + "|\n  data    = |" + (data != null ? data.join(', ') : void 0) + "|");
     };
 
     /*
@@ -621,10 +621,7 @@
 
 
     Dendrite.prototype._unsubscribeErrorMessage = function(topics, callback, context) {
-      return {
-        name: "TypeError",
-        message: "Error on call |unsubscribe| used non-string topics:\n  topics    = |" + topics + "|\n  callback  = |" + callback + "|\n  context   = |" + context + "|"
-      };
+      return new TypeError("Error on call |unsubscribe| used non-string topics:\n  topics    = |" + topics + "|\n  callback  = |" + callback + "|\n  context   = |" + context + "|");
     };
 
     /*  
@@ -635,10 +632,7 @@
 
 
     Dendrite.prototype._subscribeErrorMessage = function(topics, callback, watchdog, context) {
-      return {
-        name: "TypeError",
-        message: "Error! on call |subscribe| used non-string topics OR/AND callback isn`t function OR/AND watchdog defined but isn`t function:\n  topics    = |" + topics + "|\n  callback  = |" + callback + "|\n  watchdog  = |" + watchdog + "|\n  context   = |" + context + "|"
-      };
+      return new TypeError("Error! on call |subscribe| used non-string topics OR/AND callback isn`t function OR/AND watchdog defined but isn`t function:\n  topics    = |" + topics + "|\n  callback  = |" + callback + "|\n  watchdog  = |" + watchdog + "|\n  context   = |" + context + "|");
     };
 
     /*
@@ -649,10 +643,7 @@
 
 
     Dendrite.prototype._parseVerboseLevelError = function(level) {
-      return {
-        name: "TypeError",
-        message: "Error on parsing verbose level - not a String |" + level + "|"
-      };
+      return new TypeError("Error on parsing verbose level - not a String |" + level + "|");
     };
 
     return Dendrite;
