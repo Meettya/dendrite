@@ -1,3 +1,7 @@
+## 0.5.9 / 2013-06-18 12:20 AM
+
+  - Add #getListenedTopicsList() method
+
 ## 0.5.7 / 2013-04-05 04:10 PM
 
   - Update dependencies

@@ -1,6 +1,6 @@
 {
   "name": "dendrite",
-  "version": "0.5.7",
+  "version": "0.5.9",
   "description": "An extended Observer pattern implementation, worked at any JavaScript environment",
   "keywords": [
     "observer",

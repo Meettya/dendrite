@@ -289,4 +289,16 @@ describe 'Dendrite:', ->
       dendrite_obj.publish('callback_channel', 'test')
       result_simple.should.not.be.true
 
+  describe '#getListenedTopicsList()', ->
 
+    it 'should return topics name with listiners', ->
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
+      dendrite_obj.getListenedTopicsList().should.to.be.eql ['one', 'two', 'three', 'four']
+
+    it 'should return reduced topics name after unsubscribing', ->
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
+      dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic)
+      dendrite_obj.getListenedTopicsList().should.to.be.eql ['four']
+  
+    it 'should return empty array if no one listen', ->
+      dendrite_obj.getListenedTopicsList().should.to.be.eql []   

@@ -138,6 +138,13 @@ Or you may send task to queue for asynchronous execution (see ./tests for more e
 
     dendrite_obj.publishAsync("foo bar", "This is some data") 
 
+
+### Get list of listened topics
+
+This method will return list of topics with listiners on it. 
+
+    dendrite_obj.getListenedTopicsList()
+
 ## General Notes
 
 ### Topics:

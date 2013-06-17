@@ -4,9 +4,9 @@ _ = require 'lodash'
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
 
-@version v0.5.7
+@version v0.5.9
 @author Dmitrii Karpich  
-@copyright Dmitrii Karpich (c) 2012 under MIT Licence  
+@copyright Dmitrii Karpich (c) 2013 under MIT Licence  
 **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
 
 Thanks to [Joe Zim](http://www.joezimjs.com) for original [Publish/Subscribe plugin](http://www.joezimjs.com/projects/publish-subscribe-jquery-plugin/) for jQuery 
@@ -243,6 +243,19 @@ module.exports = class Dendrite
   publishAsync: (topics, data...) ->
     @_publisher 'async', topics, data
     this
+
+  ###
+  Get list of all topic(s) with listeners
+  
+  @example
+    dendrite_obj.getListenedTopicsList()
+  
+  See {#publish} for all info
+  @return [Array] list of all listened topics 
+  ###
+  getListenedTopicsList: ->
+    topic for topic, listiners of @_subscriptions_ when listiners.length
+
 
   ###
   !!!! Internal methods from now !!!!
