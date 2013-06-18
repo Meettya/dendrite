@@ -1,3 +1,7 @@
+## 0.7.1 / 2013-06-18 01:00 AM
+
+  - Fix internal
+
 ## 0.5.9 / 2013-06-18 12:20 AM
 
   - Add #getListenedTopicsList() method

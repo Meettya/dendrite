@@ -4,7 +4,7 @@ _ = require 'lodash'
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
 
-@version v0.5.9
+@version v0.7.1
 @author Dmitrii Karpich  
 @copyright Dmitrii Karpich (c) 2013 under MIT Licence  
 **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
@@ -39,7 +39,7 @@ module.exports = class Dendrite
     @_publishing_counter_  = 0
     @_unsubscribe_queue_   = []
     @_tasks_counter_       = 0
-    @_tasks_dictionary_    = {}
+    @_tasks_dictionary_    = []
     @_observer_verbose_level_ = @_parseVerboseLevel options?.verbose
   
 
