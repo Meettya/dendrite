@@ -1,3 +1,9 @@
+## 0.7.1 / 2014-03-12 06-00 PM
+
+  - Add #isTopicListened() method
+  - Add #on() method
+  - Add #off() method
+
 ## 0.5.9 / 2013-06-18 12:20 AM
 
   - Add #getListenedTopicsList() method

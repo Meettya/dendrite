@@ -4,9 +4,9 @@ _ = require 'lodash'
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
 
-@version v0.5.9
+@version v0.6.1
 @author Dmitrii Karpich  
-@copyright Dmitrii Karpich (c) 2013 under MIT Licence  
+@copyright Dmitrii Karpich (c) 2014 under MIT Licence  
 **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
 
 Thanks to [Joe Zim](http://www.joezimjs.com) for original [Publish/Subscribe plugin](http://www.joezimjs.com/projects/publish-subscribe-jquery-plugin/) for jQuery 
@@ -20,16 +20,16 @@ module.exports = class Dendrite
   SILENT  = 0
 
   ###
-  Construct a new Dendrite.
+  Create a new Dendrite.
   
   @example
     dendrite_obj = new Dendrite verbose : 'warning'
   
   @overload constructor()
-    Construct new Dendrite with default options
+    Create new Dendrite with default options
   
   @overload constructor(options)
-    Constrict new Dendrite with settings
+    Create new Dendrite with settings
     @param [Object] options
     @option options [String] verbose verbose level, may be [ 'debug' | 'warning' | 'error' | 'silent' ]
   ###
@@ -40,8 +40,8 @@ module.exports = class Dendrite
     @_unsubscribe_queue_   = []
     @_tasks_counter_       = 0
     @_tasks_dictionary_    = {}
+    @_internal_bus_name_   = '__DEndr1tE_-_ACtiv1tY_-_bu$__' # long ugly name to prevent intersection with users channels
     @_observer_verbose_level_ = @_parseVerboseLevel options?.verbose
-  
 
   ###
   Subscribe to topic(s).
@@ -118,6 +118,11 @@ module.exports = class Dendrite
     for topic in @_topicsToArraySplitter topics
       @_subscriptions_[topic] or= []
       @_subscriptions_[topic].push task_number
+
+      # do not cycle this
+      unless @_isInternalChannel topic
+        @publishAsync "#{@_internal_bus_name_}.subscribe", topic
+      
       
     { topics, callback, watchdog, context }
 
@@ -195,7 +200,10 @@ module.exports = class Dendrite
       else
         # If no callback is given, then remove all subscriptions to this topic
         delete @_subscriptions_[topic]
-         
+      
+      unless @_isInternalChannel topic
+        @publishAsync "#{@_internal_bus_name_}.unsubscribe", topic
+
     this
 
   ###
@@ -254,7 +262,7 @@ module.exports = class Dendrite
   @return [Array] list of all listened topics 
   ###
   getListenedTopicsList: =>
-    topic for topic, listiners of @_subscriptions_ when listiners.length
+    topic for topic, listiners of @_subscriptions_ when listiners.length and not @_isInternalChannel topic
 
 
   ###
@@ -267,10 +275,68 @@ module.exports = class Dendrite
   ###
   isTopicListened: (topic) =>
     if not _.isString(topic) or topic is ''
-      throw @_isTopicListenedErrorMessage topic
+      throw @_isTopicListenedErrorMessage topic, 'isTopicListened', 'topic'
 
     !!@_subscriptions_?[topic]?.length
 
+  ###
+  Attach listeners on Dendrite object directly, to watch subscribe\unsubscribe activity
+
+  @example
+    dendrite_obj.on 'subscribe', (topic) -> 
+      console.log topic # where 'topic' - name of channel (topic) where activity appear 
+
+  @return [Object] handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments
+  ###
+  on: (activity_type, callback) =>
+    if not _.isString(activity_type) or activity_type is ''
+      throw @_isTopicListenedErrorMessage activity_type, 'on', 'activity type'
+
+    unless _.isFunction callback
+      throw TypeError "callback is not function"
+
+    switch lc_activity_type = activity_type.toLowerCase()
+      when 'subscribe', 'unsubscribe'
+        @subscribe "#{@_internal_bus_name_}.#{lc_activity_type}", (topic, data) -> callback data
+      else
+        throw Error "unknown activity type |#{activity_type}|"
+
+  ###
+  Detach listeners from Dendrite object directly, to unwatch subscribe\unsubscribe activity
+
+  @example
+    dendrite_obj.off 'subscribe'
+    dendrite_obj.off handler
+
+  @overload off(topic)
+    Remove **all** subscriptions from topic
+    @param topic String topic names, separated by a space, to off from
+    @return [Object]
+  
+  @overload off(handler)
+    Remove subscriptions with *handler* object for one listener
+    @param [Object] handler subscription handler, returned by #on() method
+    @option handler [String] topics 1 or more topic names, separated by a space, to unsubscribe from
+    @option handler [Function] callback function to be removed from the topics subscription list
+    @option handler [Object] context object that was used as the context in the #subscribe() call
+    @return [Object]
+
+  @return [Object] handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments
+  ###
+  off: (topic) =>
+
+    # If the handler was used we are need to parse args
+    if topic?.topics
+      [topic, callback, context] = @_handlerParser topic
+    else
+      lc_topic = "#{@_internal_bus_name_}.#{topic?.toLowerCase()}"
+
+    if not _.isString(topic) or topic is ''
+      throw @_isTopicListenedErrorMessage topic, 'off', 'activity type'
+      
+    context or= {}
+
+    @unsubscribe lc_topic ? topic, callback, context
 
   ###  
         ******  ******  *** *     *    *    ******* ******* 
@@ -281,6 +347,15 @@ module.exports = class Dendrite
         *       *    *   *    * *   *     *    *    *       
         *       *     * ***    *    *     *    *    ******* 
   ###
+
+  ###
+  Find out is it internal channel or not
+  @private
+  @return [Boolean] true internal, false otherwise
+  ###
+  _isInternalChannel: (topic) =>
+    0 is topic.indexOf "#{@_internal_bus_name_}."
+
 
   ###
   Self-incapsulate @_publishing_counter_ properties to internal methods
@@ -479,10 +554,10 @@ module.exports = class Dendrite
   @private
   @return [Object] Error
   ###
-  _isTopicListenedErrorMessage: (topic) ->
+  _isTopicListenedErrorMessage: (topic, function_name, channel_name) ->
     new TypeError """
-                  Error on call |isTopicListened| used non-string, or empty string as topic:
-                    topic  = |#{topic}|
+                  Error on call |#{function_name}| used non-string, or empty string as #{channel_name}:
+                    #{channel_name}  = |#{topic}|
                   """
 
   ###

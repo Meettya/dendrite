@@ -301,7 +301,11 @@ describe 'Dendrite:', ->
       dendrite_obj.getListenedTopicsList().should.to.be.eql ['four']
   
     it 'should return empty array if no one listen', ->
-      dendrite_obj.getListenedTopicsList().should.to.be.eql []   
+      dendrite_obj.getListenedTopicsList().should.to.be.eql []
+
+    it 'should not show internal bus and return empty even #on() used', ->
+      dendrite_obj.on 'subscribe', ->
+      dendrite_obj.getListenedTopicsList().should.to.be.eql []
 
   describe '#isTopicListened()', ->
 
@@ -328,3 +332,53 @@ describe 'Dendrite:', ->
 
     it 'should throw error on non-string call', ->
       ( -> dendrite_obj.isTopicListened()).should.to.throw /^Error on call \|isTopicListened\| used non-string, or empty string as topic/
+
+  describe '#on()', ->
+
+    it 'should throw error on non-string activity name used', ->
+      ( -> dendrite_obj.on()).should.to.throw /^Error on call \|on\| used non-string, or empty string as activity type/
+
+    it 'should throw error on non-function callback used', ->
+      ( -> dendrite_obj.on()).should.to.throw TypeError
+
+    it 'should call callback on subscription', (done) ->
+      subscribe_topic = 'foo'
+
+      dendrite_obj.on 'subscribe', (topic) ->
+        topic.should.to.be.equal subscribe_topic
+        done()
+
+      dendrite_obj.subscribe 'foo', ->
+
+    it 'should call callback on unsubscription', (done) ->
+      subscribe_topic = 'foo'
+
+      dendrite_obj.on 'unsubscribe', (topic) ->
+        topic.should.to.be.equal subscribe_topic
+        done()
+
+      handler = dendrite_obj.subscribe 'foo', ->
+      dendrite_obj.unsubscribe handler
+
+  describe '#off()', ->
+
+    it 'should throw error on non-string activity type used', ->
+      ( -> dendrite_obj.off()).should.to.throw /^Error on call \|off\| used non-string, or empty string as activity type/
+
+    # yes, I use mocha in non-trivial way - but it will be explode on two done()
+    it 'should unsubscribe one callback by handler', (done) ->
+      handler = dendrite_obj.on 'subscribe', -> done Error 'fail'
+      handler2 = dendrite_obj.on 'subscribe', -> done()
+
+      dendrite_obj.off handler
+      dendrite_obj.subscribe 'foo', ->
+
+    # yes, I use mocha in non-trivial way - but it will be explode on two done()
+    it 'should unsubscribe all callback by activity type', (done) ->
+      handler = dendrite_obj.on 'subscribe', -> done Error 'fail'
+      handler2 = dendrite_obj.on 'subscribe', -> done Error 'fail'
+
+      dendrite_obj.off 'subscribe'
+      dendrite_obj.subscribe 'foo', ->
+      process.nextTick done
+
