@@ -19,7 +19,8 @@
     "mocha": "*",
     "jade": "*",
     "stitch": "*",
-    "clinch": "*"
+    "clinch": "*",
+    "uglify-js": "*"
   },
   "scripts": {
     "test": "cake test"
