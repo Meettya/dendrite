@@ -6,6 +6,7 @@ fs                = require 'fs'
 path              = require 'path'
 {spawn, exec}     = require 'child_process'
 Clinch            = require 'clinch'
+UglifyJS          = require 'uglify-js'
 
 # ANSI Terminal Colors.
 enableColors = no
@@ -53,13 +54,13 @@ clinch_on_the_fly = (cb) ->
   
   pack_config = 
     bundle : 
-      dendrite : "#{__dirname}"
+      Dendrite : "#{__dirname}"
     replacement :
       lodash : path.join __dirname, "web_modules", "lodash"
 
   # its our packer
   packer = new Clinch
-  packer.buldPackage 'dendrite_package', pack_config, cb
+  packer.buldPackage pack_config, cb
 
 # this function will create test package on the fly
 clinch_test_on_the_fly = (cb) ->
@@ -73,6 +74,10 @@ clinch_test_on_the_fly = (cb) ->
   # nothing to inject here
   packer = new Clinch inject : off
   packer.buldPackage 'test_suite', pack_config, cb
+
+minimize_code = (in_code) ->
+  result = UglifyJS.minify in_code, fromString: true
+  result.code
 
 task 'build', 'build module from source', build = (cb) ->
   files = fs.readdirSync 'src'
@@ -94,7 +99,8 @@ task 'build_test_browser_page', 'build test html for browser', build_test_browse
   cb() if typeof cb is 'function'
 
 task 'build_browser_comp_js', 'build browser-compatibility module with clinch', build_browser_comp_js = (cb) ->
-  my_res_filename = __dirname + '/test_browser/js/dendrite.js'
+  my_res_filename = __dirname + '/browser/dendrite.js'
+  my_minify_res_filename = __dirname + '/browser/dendrite.min.js'
 
   clinch_on_the_fly (err, data) ->
     if err
@@ -103,7 +109,11 @@ task 'build_browser_comp_js', 'build browser-compatibility module with clinch', 
       fs.writeFile my_res_filename, data, 'utf8', (err) ->
         throw err if err?
         log ' -> lib compiled', green
-  
+
+      fs.writeFile my_minify_res_filename, minimize_code(data), 'utf8', (err) ->
+        throw err if err?
+        log ' -> minify lib compiled', green 
+
   cb() if typeof cb is 'function'  	
    
 task 'build_test_browser_js', 'build test js for browser', build_test_browser_js = (cb) ->

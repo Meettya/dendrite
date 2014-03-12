@@ -8,7 +8,7 @@ It designed to simplify creation of low coupling and high cohesion systems with 
 
 Dendrite was created on base of [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin), plus have some unique methods like #publishAsync() and #subscribeGuarded().
 
-Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve [underscore](http://underscorejs.org/) or [lodash](http://lodash.com/) dependency and get packed verson (see _test\_browser/js/dendrite.js_) or pack all you project with [clinch](https://github.com/Meettya/clinch). See test_browser folder for detail.
+Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve [underscore](http://underscorejs.org/) or [lodash](http://lodash.com/) dependency and get packed verson (see _browser/dendrite.js_ or _browser/dendrite.js.min_ ) or pack all you project with [clinch](https://github.com/Meettya/clinch).
 
 
 ## Description:
@@ -18,6 +18,8 @@ Dendrite, as [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ
 Dendrite created to be used as local object, not one huge global observer. Its possible to have any numbers of dendrite objects without any interactions.
 
 To have some more benefits from Dendrite you should be used #publishAsync() and #subscribeGuarded() methods. These methods may reduce GUI latency and simplify exception handling with callbacks.
+
+Moreover - Dendrite may attach listeners to 'subscribe' and 'unsubscribe' events, its allow add activity to listened topics and stop it on unlistened, for example.
 
 See the examples below or test files.
 
@@ -144,6 +146,26 @@ Or you may send task to queue for asynchronous execution (see ./tests for more e
 This method will return list of topics with listiners on it. 
 
     dendrite_obj.getListenedTopicsList()
+
+### Test is topic have listeners
+
+This method will return boolean value - is topic have listeners or not
+
+    is_listened = dendrite_obj.isTopicListened 'foo'
+
+### Attach callback to dendrite object on subscribe/unsubscribe events
+
+This method attach listeners to internal events - subscribe/unsubscribe.
+May be helpful if logic request ACTIVE observer
+
+    handler = dendrite_obj.on 'subscribe', (topic) -> console.log "subscribed to |#{topic}|"
+
+### Detach callback from dendrite object on subscribe/unsubscribe events
+
+This method dettach listeners from internal events - subscribe/unsubscribe.
+
+    dendrite_obj.off 'subscribe'  # remove ALL listeners
+    dendrite_obj.off handler      # remove ONLY one listener
 
 ## General Notes
 

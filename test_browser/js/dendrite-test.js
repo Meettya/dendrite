@@ -27,24 +27,16 @@ require = function(name, parent) {
   });
   return (_ref = module.exports) != null ? _ref : exports;
 };
-  dependencies = {"2198248400":{"..":2448541690},"2448541690":{"lodash":1154215551}};
+  dependencies = {"608121598":{"..":770618140},"770618140":{"lodash":1154215551}};
   sources = {
-"1154215551": function(exports, module, require) {
-// /Users/meettya/github/dendrite/web_modules/lodash.coffee 
-/*
-This is lodash shim
-*/
-
-module.exports = this._;
-},
-"2198248400": function(exports, module, require) {
+"608121598": function(exports, module, require) {
 // /Users/meettya/github/dendrite/test/dendrite-test.coffee 
+
 /*
 Test suite for node AND browser in one file
 So, we are need some data from global
 Its so wrong, but its OK for test
-*/
-
+ */
 var Dendrite,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -91,31 +83,31 @@ describe('Dendrite:', function() {
       return this.internal_var = n * n;
     },
     run_function: function(topic, cb, arg) {
-      var _this = this;
-      return setTimeout((function() {
-        return cb(_this.calc_func(arg));
-      }), 0);
+      return setTimeout(((function(_this) {
+        return function() {
+          return cb(_this.calc_func(arg));
+        };
+      })(this)), 0);
     }
   };
   beforeEach(function() {
     dendrite_obj = new Dendrite;
+
     /*
     Clean up global vars before each test
-    */
-
+     */
     result_simple = false;
     result_with_args = false;
     return huge_logic.internal_var = 0;
   });
   describe('class', function() {
     return it('should may be used as base class', function() {
-      var SuperDendrite, super_dendrite_obj, _ref;
+      var SuperDendrite, super_dendrite_obj;
       SuperDendrite = (function(_super) {
         __extends(SuperDendrite, _super);
 
         function SuperDendrite() {
-          _ref = SuperDendrite.__super__.constructor.apply(this, arguments);
-          return _ref;
+          return SuperDendrite.__super__.constructor.apply(this, arguments);
         }
 
         SuperDendrite.prototype.foo = false;
@@ -385,7 +377,7 @@ describe('Dendrite:', function() {
       return result_simple.should.not.be["true"];
     });
   });
-  return describe('#getListenedTopicsList()', function() {
+  describe('#getListenedTopicsList()', function() {
     it('should return topics name with listiners', function() {
       dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic);
       return dendrite_obj.getListenedTopicsList().should.to.be.eql(['one', 'two', 'three', 'four']);
@@ -395,32 +387,126 @@ describe('Dendrite:', function() {
       dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic);
       return dendrite_obj.getListenedTopicsList().should.to.be.eql(['four']);
     });
-    return it('should return empty array if no one listen', function() {
+    it('should return empty array if no one listen', function() {
       return dendrite_obj.getListenedTopicsList().should.to.be.eql([]);
+    });
+    return it('should not show internal bus and return empty even #on() used', function() {
+      dendrite_obj.on('subscribe', function() {});
+      return dendrite_obj.getListenedTopicsList().should.to.be.eql([]);
+    });
+  });
+  describe('#isTopicListened()', function() {
+    it('should return true if topic have listeners', function() {
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic);
+      return dendrite_obj.isTopicListened('one').should.to.be["true"];
+    });
+    it('should return false if topic havent listeners', function() {
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic);
+      return dendrite_obj.isTopicListened('five').should.to.be["false"];
+    });
+    it('should return false after unsubscribing tested', function() {
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic);
+      dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic);
+      return dendrite_obj.isTopicListened('one').should.to.be["false"];
+    });
+    it('should return true after unsubscribing others', function() {
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic);
+      dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic);
+      return dendrite_obj.isTopicListened('four').should.to.be["true"];
+    });
+    it('should return false if no one listen', function() {
+      return dendrite_obj.isTopicListened('one').should.to.be["false"];
+    });
+    return it('should throw error on non-string call', function() {
+      return (function() {
+        return dendrite_obj.isTopicListened();
+      }).should.to["throw"](/^Error on call \|isTopicListened\| used non-string, or empty string as topic/);
+    });
+  });
+  describe('#on()', function() {
+    it('should throw error on non-string activity name used', function() {
+      return (function() {
+        return dendrite_obj.on();
+      }).should.to["throw"](/^Error on call \|on\| used non-string, or empty string as activity type/);
+    });
+    it('should throw error on non-function callback used', function() {
+      return (function() {
+        return dendrite_obj.on();
+      }).should.to["throw"](TypeError);
+    });
+    it('should call callback on subscription', function(done) {
+      var subscribe_topic;
+      subscribe_topic = 'foo';
+      dendrite_obj.on('subscribe', function(topic) {
+        topic.should.to.be.equal(subscribe_topic);
+        return done();
+      });
+      return dendrite_obj.subscribe('foo', function() {});
+    });
+    return it('should call callback on unsubscription', function(done) {
+      var handler, subscribe_topic;
+      subscribe_topic = 'foo';
+      dendrite_obj.on('unsubscribe', function(topic) {
+        topic.should.to.be.equal(subscribe_topic);
+        return done();
+      });
+      handler = dendrite_obj.subscribe('foo', function() {});
+      return dendrite_obj.unsubscribe(handler);
+    });
+  });
+  return describe('#off()', function() {
+    it('should throw error on non-string activity type used', function() {
+      return (function() {
+        return dendrite_obj.off();
+      }).should.to["throw"](/^Error on call \|off\| used non-string, or empty string as activity type/);
+    });
+    it('should unsubscribe one callback by handler', function(done) {
+      var handler, handler2;
+      handler = dendrite_obj.on('subscribe', function() {
+        return done(Error('fail'));
+      });
+      handler2 = dendrite_obj.on('subscribe', function() {
+        return done();
+      });
+      dendrite_obj.off(handler);
+      return dendrite_obj.subscribe('foo', function() {});
+    });
+    return it('should unsubscribe all callback by activity type', function(done) {
+      var handler, handler2;
+      handler = dendrite_obj.on('subscribe', function() {
+        return done(Error('fail'));
+      });
+      handler2 = dendrite_obj.on('subscribe', function() {
+        return done(Error('fail'));
+      });
+      dendrite_obj.off('subscribe');
+      dendrite_obj.subscribe('foo', function() {});
+      return process.nextTick(done);
     });
   });
 });
 },
-"2448541690": function(exports, module, require) {
+"770618140": function(exports, module, require) {
 // /Users/meettya/github/dendrite/lib/dendrite.js 
-// Generated by CoffeeScript 1.6.3
+// Generated by CoffeeScript 1.7.1
 (function() {
   var Dendrite, _,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __slice = [].slice;
 
   _ = require('lodash');
 
+
   /*
   **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
   
-  @version v0.7.1
+  @version v0.6.1
   @author Dmitrii Karpich  
-  @copyright Dmitrii Karpich (c) 2013 under MIT Licence  
+  @copyright Dmitrii Karpich (c) 2014 under MIT Licence  
   **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
   
   Thanks to [Joe Zim](http://www.joezimjs.com) for original [Publish/Subscribe plugin](http://www.joezimjs.com/projects/publish-subscribe-jquery-plugin/) for jQuery
-  */
-
+   */
 
   module.exports = Dendrite = (function() {
     var DEBUG, ERROR, SILENT, WARNING;
@@ -433,33 +519,55 @@ describe('Dendrite:', function() {
 
     SILENT = 0;
 
+
     /*
-    Construct a new Dendrite.
+    Create a new Dendrite.
     
     @example
       dendrite_obj = new Dendrite verbose : 'warning'
     
     @overload constructor()
-      Construct new Dendrite with default options
+      Create new Dendrite with default options
     
     @overload constructor(options)
-      Constrict new Dendrite with settings
+      Create new Dendrite with settings
       @param [Object] options
       @option options [String] verbose verbose level, may be [ 'debug' | 'warning' | 'error' | 'silent' ]
-    */
-
+     */
 
     function Dendrite(options) {
       if (options == null) {
         options = {};
       }
+      this._publishFiring = __bind(this._publishFiring, this);
+      this._unsubscribeResume = __bind(this._unsubscribeResume, this);
+      this._publisher = __bind(this._publisher, this);
+      this._publisherEngine = __bind(this._publisherEngine, this);
+      this._parseVerboseLevel = __bind(this._parseVerboseLevel, this);
+      this._getNextTaskNumber = __bind(this._getNextTaskNumber, this);
+      this._publishingDec = __bind(this._publishingDec, this);
+      this._publishingInc = __bind(this._publishingInc, this);
+      this._isPublishing = __bind(this._isPublishing, this);
+      this._isInternalChannel = __bind(this._isInternalChannel, this);
+      this.off = __bind(this.off, this);
+      this.on = __bind(this.on, this);
+      this.isTopicListened = __bind(this.isTopicListened, this);
+      this.getListenedTopicsList = __bind(this.getListenedTopicsList, this);
+      this.publishAsync = __bind(this.publishAsync, this);
+      this.publishSync = __bind(this.publishSync, this);
+      this.publish = __bind(this.publish, this);
+      this.unsubscribe = __bind(this.unsubscribe, this);
+      this.subscribeGuarded = __bind(this.subscribeGuarded, this);
+      this.subscribe = __bind(this.subscribe, this);
       this._subscriptions_ = {};
       this._publishing_counter_ = 0;
       this._unsubscribe_queue_ = [];
       this._tasks_counter_ = 0;
       this._tasks_dictionary_ = [];
+      this._internal_bus_name_ = '__DEndr1tE_-_ACtiv1tY_-_bu$__';
       this._observer_verbose_level_ = this._parseVerboseLevel(options != null ? options.verbose : void 0);
     }
+
 
     /*
     Subscribe to topic(s).
@@ -483,8 +591,7 @@ describe('Dendrite:', function() {
       @return [Object]
     
     @return [Object] handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments
-    */
-
+     */
 
     Dendrite.prototype.subscribe = function(topics, callback, context) {
       if (context == null) {
@@ -492,6 +599,7 @@ describe('Dendrite:', function() {
       }
       return this.subscribeGuarded(topics, callback, void 0, context);
     };
+
 
     /*
     Subscribe to topic(s) with 'watchdog' function to handle errors here, in subscriber.
@@ -529,8 +637,7 @@ describe('Dendrite:', function() {
     
     @see #subscribe
     @return [Object] handler { topics: topics, callback: callback, watchdog: watchdog, context: context } or throw exception on invalid arguments
-    */
-
+     */
 
     Dendrite.prototype.subscribeGuarded = function(topics, callback, watchdog, context) {
       var task_number, topic, _base, _i, _len, _ref;
@@ -547,6 +654,9 @@ describe('Dendrite:', function() {
         topic = _ref[_i];
         (_base = this._subscriptions_)[topic] || (_base[topic] = []);
         this._subscriptions_[topic].push(task_number);
+        if (!this._isInternalChannel(topic)) {
+          this.publishAsync("" + this._internal_bus_name_ + ".subscribe", topic);
+        }
       }
       return {
         topics: topics,
@@ -556,6 +666,7 @@ describe('Dendrite:', function() {
       };
     };
 
+
     /*
     Unsubscribe from topic(s) or remove all subscribers from topic(s).
     
@@ -563,9 +674,9 @@ describe('Dendrite:', function() {
       and restarted to unsubscribe when all publish tasks is done.
     
     @example
-      # unsubscribe 'obj' from topics 'foo bar'
+       * unsubscribe 'obj' from topics 'foo bar'
       dendrite_obj.unsubscribe 'foo bar', callback_reference, obj
-      # remove all subscribers from topics 'bar baz'
+       * remove all subscribers from topics 'bar baz'
       dendrite_obj.unsubscribe 'bar baz'
     
     @overload unsubscribe(topics)
@@ -595,8 +706,7 @@ describe('Dendrite:', function() {
       @return [Object]
     
     @return [Object]  *this* for chaining
-    */
-
+     */
 
     Dendrite.prototype.unsubscribe = function(topics, callback, context) {
       var idx, task, task_number, topic, _i, _j, _len, _len1, _ref, _ref1, _ref2;
@@ -611,14 +721,14 @@ describe('Dendrite:', function() {
         this._unsubscribe_queue_.push([topics, callback, context]);
         return this;
       }
+
       /*
       IMPORTANT! Yes, we are remove subscriptions ONLY, 
       and keep tasks_dictionary untouched because its not necessary.
       Dictionary compacted, calculations of links to dictionary from subscriptions
       may be nightmare - its like pointers in C, exceptionally funny in async mode. 
       So, who get f*ck about this? Not me!!!
-      */
-
+       */
       _ref1 = this._topicsToArraySplitter(topics);
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         topic = _ref1[_i];
@@ -635,9 +745,13 @@ describe('Dendrite:', function() {
         } else {
           delete this._subscriptions_[topic];
         }
+        if (!this._isInternalChannel(topic)) {
+          this.publishAsync("" + this._internal_bus_name_ + ".unsubscribe", topic);
+        }
       }
       return this;
     };
+
 
     /*
     Synchronously publish any data to topic(s).
@@ -657,8 +771,7 @@ describe('Dendrite:', function() {
       @return [Object]
     
     @return [Object] *this* for chaining
-    */
-
+     */
 
     Dendrite.prototype.publish = function() {
       var data, topics;
@@ -667,11 +780,11 @@ describe('Dendrite:', function() {
       return this;
     };
 
+
     /*
     Alias for {#publish}
     @return [Object] *this* for chaining
-    */
-
+     */
 
     Dendrite.prototype.publishSync = function() {
       var data, topics;
@@ -679,6 +792,7 @@ describe('Dendrite:', function() {
       this._publisher('sync', topics, data);
       return this;
     };
+
 
     /*
     Asynchronously publish any data to topic(s).
@@ -690,8 +804,7 @@ describe('Dendrite:', function() {
     
     See {#publish} for all info
     @return [Object] *this* for chaining
-    */
-
+     */
 
     Dendrite.prototype.publishAsync = function() {
       var data, topics;
@@ -699,6 +812,7 @@ describe('Dendrite:', function() {
       this._publisher('async', topics, data);
       return this;
     };
+
 
     /*
     Get list of all topic(s) with listeners
@@ -708,8 +822,7 @@ describe('Dendrite:', function() {
     
     See {#publish} for all info
     @return [Array] list of all listened topics
-    */
-
+     */
 
     Dendrite.prototype.getListenedTopicsList = function() {
       var listiners, topic, _ref, _results;
@@ -717,45 +830,148 @@ describe('Dendrite:', function() {
       _results = [];
       for (topic in _ref) {
         listiners = _ref[topic];
-        if (listiners.length) {
+        if (listiners.length && !this._isInternalChannel(topic)) {
           _results.push(topic);
         }
       }
       return _results;
     };
 
+
     /*
-    !!!! Internal methods from now !!!!
-    */
+    Return is topic listened or not
+    
+    @example
+      dendrite_obj.isTopicListened 'foo'
+    
+    @return [Boolean] true if topic listened, false otherwise
+     */
+
+    Dendrite.prototype.isTopicListened = function(topic) {
+      var _ref, _ref1;
+      if (!_.isString(topic) || topic === '') {
+        throw this._isTopicListenedErrorMessage(topic, 'isTopicListened', 'topic');
+      }
+      return !!((_ref = this._subscriptions_) != null ? (_ref1 = _ref[topic]) != null ? _ref1.length : void 0 : void 0);
+    };
+
+
+    /*
+    Attach listeners on Dendrite object directly, to watch subscribe\unsubscribe activity
+    
+    @example
+      dendrite_obj.on 'subscribe', (topic) -> 
+        console.log topic # where 'topic' - name of channel (topic) where activity appear 
+    
+    @return [Object] handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments
+     */
+
+    Dendrite.prototype.on = function(activity_type, callback) {
+      var lc_activity_type;
+      if (!_.isString(activity_type) || activity_type === '') {
+        throw this._isTopicListenedErrorMessage(activity_type, 'on', 'activity type');
+      }
+      if (!_.isFunction(callback)) {
+        throw TypeError("callback is not function");
+      }
+      switch (lc_activity_type = activity_type.toLowerCase()) {
+        case 'subscribe':
+        case 'unsubscribe':
+          return this.subscribe("" + this._internal_bus_name_ + "." + lc_activity_type, function(topic, data) {
+            return callback(data);
+          });
+        default:
+          throw Error("unknown activity type |" + activity_type + "|");
+      }
+    };
+
+
+    /*
+    Detach listeners from Dendrite object directly, to unwatch subscribe\unsubscribe activity
+    
+    @example
+      dendrite_obj.off 'subscribe'
+      dendrite_obj.off handler
+    
+    @overload off(topic)
+      Remove **all** subscriptions from topic
+      @param topic String topic names, separated by a space, to off from
+      @return [Object]
+    
+    @overload off(handler)
+      Remove subscriptions with *handler* object for one listener
+      @param [Object] handler subscription handler, returned by #on() method
+      @option handler [String] topics 1 or more topic names, separated by a space, to unsubscribe from
+      @option handler [Function] callback function to be removed from the topics subscription list
+      @option handler [Object] context object that was used as the context in the #subscribe() call
+      @return [Object]
+    
+    @return [Object] handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments
+     */
+
+    Dendrite.prototype.off = function(topic) {
+      var callback, context, lc_topic, _ref;
+      if (topic != null ? topic.topics : void 0) {
+        _ref = this._handlerParser(topic), topic = _ref[0], callback = _ref[1], context = _ref[2];
+      } else {
+        lc_topic = "" + this._internal_bus_name_ + "." + (topic != null ? topic.toLowerCase() : void 0);
+      }
+      if (!_.isString(topic) || topic === '') {
+        throw this._isTopicListenedErrorMessage(topic, 'off', 'activity type');
+      }
+      context || (context = {});
+      return this.unsubscribe(lc_topic != null ? lc_topic : topic, callback, context);
+    };
+
+
+    /*  
+          ******  ******  *** *     *    *    ******* ******* 
+          *     * *     *  *  *     *   * *      *    *       
+          *     * *     *  *  *     *  *   *     *    *       
+          ******  ******   *  *     * *     *    *    *****   
+          *       *   *    *   *   *  *******    *    *       
+          *       *    *   *    * *   *     *    *    *       
+          *       *     * ***    *    *     *    *    *******
+     */
+
+
+    /*
+    Find out is it internal channel or not
+    @private
+    @return [Boolean] true internal, false otherwise
+     */
+
+    Dendrite.prototype._isInternalChannel = function(topic) {
+      return 0 === topic.indexOf("" + this._internal_bus_name_ + ".");
+    };
 
 
     /*
     Self-incapsulate @_publishing_counter_ properties to internal methods
     @private
     @return [Boolean] true if Dendrite is publishing, false is idle
-    */
-
+     */
 
     Dendrite.prototype._isPublishing = function() {
       return !!this._publishing_counter_;
     };
 
+
     /*
     Self-incapsulate @_publishing_counter_ properties to internal methods
     @private
-    */
-
+     */
 
     Dendrite.prototype._publishingInc = function() {
       this._publishing_counter_ += 1;
       return null;
     };
 
+
     /*
     Self-incapsulate @_publishing_counter_ properties to internal methods
     @private
-    */
-
+     */
 
     Dendrite.prototype._publishingDec = function() {
       if (!this._isPublishing) {
@@ -765,24 +981,24 @@ describe('Dendrite:', function() {
       return null;
     };
 
+
     /*
     Self-incapsulated task auto-incremented counter
     @private
     @return [Integer] unique task number
-    */
-
+     */
 
     Dendrite.prototype._getNextTaskNumber = function() {
       return this._tasks_counter_ += 1;
     };
+
 
     /*
     Verbose level args parser
     @private
     @param level [String] verbose level name
     @return [Integer] verbose level
-    */
-
+     */
 
     Dendrite.prototype._parseVerboseLevel = function(level) {
       if (level == null) {
@@ -805,13 +1021,13 @@ describe('Dendrite:', function() {
       }
     };
 
+
     /*
     Internal method for different events types definitions
     @private
     @param type [String] engine type name
     @return [Array<publish, unsubscribe>] engine or throw exception on invalid arguments
-    */
-
+     */
 
     Dendrite.prototype._publisherEngine = function(type) {
       var engine_dictionary, selected_engine, self;
@@ -841,14 +1057,14 @@ describe('Dendrite:', function() {
       return [selected_engine.publish, selected_engine.unsubscribe];
     };
 
+
     /*
     Publisher itself
     @private
     @param type [String] engine type name
     @param topics [String] topic names
     @param data [Array] any kind of data(s)
-    */
-
+     */
 
     Dendrite.prototype._publisher = function(type, topics, data) {
       var task_number, topic, _i, _j, _len, _len1, _publish, _ref, _ref1, _ref2, _unsubscribe;
@@ -872,6 +1088,7 @@ describe('Dendrite:', function() {
       return null;
     };
 
+
     /*
     Internal method for splitting topics string to array.
     @note May skip duplicate (it used for un/subscription )
@@ -879,8 +1096,7 @@ describe('Dendrite:', function() {
     @param topics [String] topic names
     @param skip_duplicate [Boolean] *optional* is it needed to skip duplicate?
     @return [Array<topics>] individual topics
-    */
-
+     */
 
     Dendrite.prototype._topicsToArraySplitter = function(topics, skip_duplicate) {
       var topic, used_topics, _i, _len, _ref, _results;
@@ -904,6 +1120,7 @@ describe('Dendrite:', function() {
       return _results;
     };
 
+
     /*
     Internal method for handler parser
     @private
@@ -911,8 +1128,7 @@ describe('Dendrite:', function() {
     @param callback [Function] *optional*
     @param context [Object] *optional*
     @return [Array<topics, callback, context>] parsed handler
-    */
-
+     */
 
     Dendrite.prototype._handlerParser = function(handler, callback, context) {
       var topics;
@@ -922,11 +1138,11 @@ describe('Dendrite:', function() {
       return [topics, callback, context];
     };
 
+
     /*
     Internal method for unsubscribe continue
     @private
-    */
-
+     */
 
     Dendrite.prototype._unsubscribeResume = function() {
       var task, _base;
@@ -952,11 +1168,11 @@ describe('Dendrite:', function() {
       return null;
     };
 
+
     /*
     Internal method for publish firing
     @private
-    */
-
+     */
 
     Dendrite.prototype._publishFiring = function(topic, task, data) {
       var err, _ref;
@@ -983,45 +1199,56 @@ describe('Dendrite:', function() {
       return null;
     };
 
+
+    /*
+    Internal method for publish error message about non-string topic
+    @private
+    @return [Object] Error
+     */
+
+    Dendrite.prototype._isTopicListenedErrorMessage = function(topic, function_name, channel_name) {
+      return new TypeError("Error on call |" + function_name + "| used non-string, or empty string as " + channel_name + ":\n  " + channel_name + "  = |" + topic + "|");
+    };
+
+
     /*
     Internal method for publish error message constructor
     @private
     @return [Object] Error
-    */
-
+     */
 
     Dendrite.prototype._publishErrorMessage = function(topics, data) {
       return new TypeError("Error on call |publish| used non-string topics:\n  topics  = |" + topics + "|\n  data    = |" + (data != null ? data.join(', ') : void 0) + "|");
     };
 
+
     /*
     Internal method for unsubscribe error message constructor
     @private
     @return [Object] Error
-    */
-
+     */
 
     Dendrite.prototype._unsubscribeErrorMessage = function(topics, callback, context) {
       return new TypeError("Error on call |unsubscribe| used non-string topics:\n  topics    = |" + topics + "|\n  callback  = |" + callback + "|\n  context   = |" + context + "|");
     };
 
+
     /*  
     Internal method for subscribe error message constructor
     @private
     @return [Object] Error
-    */
-
+     */
 
     Dendrite.prototype._subscribeErrorMessage = function(topics, callback, watchdog, context) {
       return new TypeError("Error! on call |subscribe| used non-string topics OR/AND callback isn`t function OR/AND watchdog defined but isn`t function:\n  topics    = |" + topics + "|\n  callback  = |" + callback + "|\n  watchdog  = |" + watchdog + "|\n  context   = |" + context + "|");
     };
 
+
     /*
     Internal method for error message from verbose level parser
     @private
     @return [Object] Error
-    */
-
+     */
 
     Dendrite.prototype._parseVerboseLevelError = function(level) {
       return new TypeError("Error on parsing verbose level - not a String |" + level + "|");
@@ -1032,9 +1259,17 @@ describe('Dendrite:', function() {
   })();
 
 }).call(this);
+},
+"1154215551": function(exports, module, require) {
+// /Users/meettya/github/dendrite/web_modules/lodash.coffee 
+
+/*
+This is lodash shim
+ */
+module.exports = this._;
 }};
 /* bundle export */
 var test_suite = {
-  dendrite_test : require(2198248400)
+  dendrite_test : require(608121598)
 };
 }).call(this);
