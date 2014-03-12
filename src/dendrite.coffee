@@ -66,7 +66,7 @@ module.exports = class Dendrite
   
   @return [Object] handler { topics: topics, callback: callback, watchdog: undefined, context: context } or throw exception on invalid arguments
   ###
-  subscribe: (topics, callback, context = {}) ->
+  subscribe: (topics, callback, context = {}) =>
     @subscribeGuarded topics, callback, undefined, context
 
   ###
@@ -106,7 +106,7 @@ module.exports = class Dendrite
   @see #subscribe
   @return [Object] handler { topics: topics, callback: callback, watchdog: watchdog, context: context } or throw exception on invalid arguments
   ###
-  subscribeGuarded: (topics, callback, watchdog, context = {}) ->
+  subscribeGuarded: (topics, callback, watchdog, context = {}) =>
 
     # Make sure that each argument is valid
     unless _.isString(topics) or _.isFunction(callback) or ( not watchdog? or _.isFunction watchdog )
@@ -161,7 +161,7 @@ module.exports = class Dendrite
   
   @return [Object]  *this* for chaining
   ###
-  unsubscribe: (topics, callback, context) ->
+  unsubscribe: (topics, callback, context) =>
  
     # If the handler was used we are need to parse args
     if topics.topics
@@ -217,7 +217,7 @@ module.exports = class Dendrite
   
   @return [Object] *this* for chaining
   ###
-  publish: (topics, data...) ->
+  publish: (topics, data...) =>
     @_publisher 'sync', topics, data
     this
     
@@ -225,7 +225,7 @@ module.exports = class Dendrite
   Alias for {#publish}
   @return [Object] *this* for chaining
   ###
-  publishSync: (topics, data...) ->
+  publishSync: (topics, data...) =>
     @_publisher 'sync', topics, data
     this
 
@@ -240,7 +240,7 @@ module.exports = class Dendrite
   See {#publish} for all info
   @return [Object] *this* for chaining
   ###
-  publishAsync: (topics, data...) ->
+  publishAsync: (topics, data...) =>
     @_publisher 'async', topics, data
     this
 
@@ -253,7 +253,7 @@ module.exports = class Dendrite
   See {#publish} for all info
   @return [Array] list of all listened topics 
   ###
-  getListenedTopicsList: ->
+  getListenedTopicsList: =>
     topic for topic, listiners of @_subscriptions_ when listiners.length
 
 
@@ -266,14 +266,14 @@ module.exports = class Dendrite
   @private
   @return [Boolean] true if Dendrite is publishing, false is idle
   ###
-  _isPublishing: ->
+  _isPublishing: =>
     !!@_publishing_counter_
 
   ###
   Self-incapsulate @_publishing_counter_ properties to internal methods
   @private
   ###
-  _publishingInc: ->
+  _publishingInc: =>
     @_publishing_counter_ += 1
     null
 
@@ -281,7 +281,7 @@ module.exports = class Dendrite
   Self-incapsulate @_publishing_counter_ properties to internal methods
   @private
   ###
-  _publishingDec: ->
+  _publishingDec: =>
     unless @_isPublishing
       throw Error """
                     Error on decrement publishing counter
@@ -295,7 +295,7 @@ module.exports = class Dendrite
   @private
   @return [Integer] unique task number
   ###
-  _getNextTaskNumber: ->
+  _getNextTaskNumber: =>
     @_tasks_counter_ += 1
 
   ###
@@ -304,7 +304,7 @@ module.exports = class Dendrite
   @param level [String] verbose level name
   @return [Integer] verbose level
   ###
-  _parseVerboseLevel: (level) ->
+  _parseVerboseLevel: (level) =>
     # default level is ERROR
     unless level?
       return ERROR
@@ -326,7 +326,7 @@ module.exports = class Dendrite
   @param type [String] engine type name
   @return [Array<publish, unsubscribe>] engine or throw exception on invalid arguments
   ###
-  _publisherEngine: (type) ->
+  _publisherEngine: (type) =>
     # we are need to have reference to this object itself
     self = @
 
@@ -353,7 +353,7 @@ module.exports = class Dendrite
   @param topics [String] topic names
   @param data [Array] any kind of data(s)
   ###
-  _publisher: (type, topics, data) ->
+  _publisher: (type, topics, data) =>
 
     # if somthing go wrong
     unless _.isString(topics)
@@ -406,7 +406,7 @@ module.exports = class Dendrite
   Internal method for unsubscribe continue
   @private
   ###
-  _unsubscribeResume: ->
+  _unsubscribeResume: =>
     # its unimportant if unsubscribe queue is empty
     return unless @_unsubscribe_queue_.length
 
@@ -426,7 +426,7 @@ module.exports = class Dendrite
   Internal method for publish firing
   @private
   ###
-  _publishFiring: (topic, task, data) ->
+  _publishFiring: (topic, task, data) =>
     try 
       task[0].apply task[1], [topic].concat data
     catch err
