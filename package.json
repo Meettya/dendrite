@@ -14,7 +14,7 @@
     "lodash": "*"
   },
   "devDependencies": {
-    "coffee-script": "*",
+    "coffee-script": ">=1.7.0",
     "chai": "*",
     "mocha": "*",
     "jade": "*",
