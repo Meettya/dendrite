@@ -302,3 +302,29 @@ describe 'Dendrite:', ->
   
     it 'should return empty array if no one listen', ->
       dendrite_obj.getListenedTopicsList().should.to.be.eql []   
+
+  describe '#isTopicListened()', ->
+
+    it 'should return true if topic have listeners', ->
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
+      dendrite_obj.isTopicListened('one').should.to.be.true
+
+    it 'should return false if topic havent listeners', ->
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
+      dendrite_obj.isTopicListened('five').should.to.be.false
+
+    it 'should return false after unsubscribing tested', ->
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
+      dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic)
+      dendrite_obj.isTopicListened('one').should.to.be.false
+
+    it 'should return true after unsubscribing others', ->
+      dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
+      dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic)
+      dendrite_obj.isTopicListened('four').should.to.be.true
+  
+    it 'should return false if no one listen', ->
+      dendrite_obj.isTopicListened('one').should.to.be.false
+
+    it 'should throw error on non-string call', ->
+      ( -> dendrite_obj.isTopicListened()).should.to.throw /^Error on call \|isTopicListened\| used non-string, or empty string as topic/

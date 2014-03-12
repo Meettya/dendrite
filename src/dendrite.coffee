@@ -258,7 +258,28 @@ module.exports = class Dendrite
 
 
   ###
-  !!!! Internal methods from now !!!!
+  Return is topic listened or not
+
+  @example
+    dendrite_obj.isTopicListened 'foo'
+
+  @return [Boolean] true if topic listened, false otherwise
+  ###
+  isTopicListened: (topic) =>
+    if not _.isString(topic) or topic is ''
+      throw @_isTopicListenedErrorMessage topic
+
+    !!@_subscriptions_?[topic]?.length
+
+
+  ###  
+        ******  ******  *** *     *    *    ******* ******* 
+        *     * *     *  *  *     *   * *      *    *       
+        *     * *     *  *  *     *  *   *     *    *       
+        ******  ******   *  *     * *     *    *    *****   
+        *       *   *    *   *   *  *******    *    *       
+        *       *    *   *    * *   *     *    *    *       
+        *       *     * ***    *    *     *    *    ******* 
   ###
 
   ###
@@ -452,6 +473,17 @@ module.exports = class Dendrite
       @_publishingDec()
 
     null
+
+  ###
+  Internal method for publish error message about non-string topic
+  @private
+  @return [Object] Error
+  ###
+  _isTopicListenedErrorMessage: (topic) ->
+    new TypeError """
+                  Error on call |isTopicListened| used non-string, or empty string as topic:
+                    topic  = |#{topic}|
+                  """
 
   ###
   Internal method for publish error message constructor
