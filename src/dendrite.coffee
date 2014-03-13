@@ -4,7 +4,7 @@ _ = require 'lodash'
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
 
-@version v0.6.3
+@version v0.6.4
 @author Dmitrii Karpich  
 @copyright Dmitrii Karpich (c) 2014 under MIT Licence  
 **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)

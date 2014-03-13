@@ -1,3 +1,7 @@
+## 0.6.4 / 2014-03-13 10-00 AM
+
+  - Rebuild browser pack with new clinch
+
 ## 0.6.3 / 2014-03-12 10-00 PM
 
   - Fix internal
