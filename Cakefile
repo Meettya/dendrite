@@ -79,6 +79,12 @@ minimize_code = (in_code) ->
   result = UglifyJS.minify in_code, fromString: true
   result.code
 
+build_jade = (work_dir, src_dir) ->
+  files = fs.readdirSync "#{work_dir}/#{src_dir}"
+  files = ("#{work_dir}/#{src_dir}/" + file for file in files when file.match(/\.jade$/))
+  jade ['--pretty', '--no-debug', '--out', "#{work_dir}"].concat(files), ->
+    log ' -> build html from jade for browser done', green
+
 task 'build', 'build module from source', build = (cb) ->
   files = fs.readdirSync 'src'
   files = ('src/' + file for file in files when file.match(/\.coffee$/))
@@ -91,11 +97,12 @@ task 'test', 'test builded module', ->
     test_file = 'test/dendrite-test.coffee'
     run_test test_file, -> log ' -> all tests passed :)', green
 
+task 'build_browser_example', 'build browser example pages', build_browser_example = (cb) ->
+  build_jade 'examples_browser', 'src' 
+  cb() if typeof cb is 'function'
+
 task 'build_test_browser_page', 'build test html for browser', build_test_browser_html = (cb) ->
-  files = fs.readdirSync 'test_browser/src'
-  files = ('test_browser/src/' + file for file in files when file.match(/\.jade$/))
-  jade ['--pretty', '--no-debug', '--out', 'test_browser'].concat(files), ->
-    log ' -> build test html for browser done', green
+  build_jade 'test_browser', 'src' 
   cb() if typeof cb is 'function'
 
 task 'build_browser_comp_js', 'build browser-compatibility module with clinch', build_browser_comp_js = (cb) ->

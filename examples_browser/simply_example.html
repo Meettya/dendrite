@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dendrite example usage</title>
+    <!-- head only-->
+    <script src="vendor/head.load-1.0.3.min.js"></script><script type="text/javascript">
+(function() {
+  head.load('css/bootstrap.min.css', 'vendor/jquery-2.1.0.min.js', 'vendor/bootstrap.min.js', 'vendor/lodash-2.4.1.min.js', '../browser/dendrite.min.js');
+
+}).call(this);
+</script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col-md-3 col-sm-offset-1">
+        <div id="source" class="form-group">
+          <label class="control-label">Input here</label>
+          <textarea rows="4" cols="20" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div id="destination1" class="form-group">
+          <label class="control-label">See here</label>
+          <textarea rows="4" cols="20" disabled class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div id="destination2" class="form-group">
+          <label class="control-label">And here</label>
+          <textarea rows="40" cols="20" disabled class="form-control"></textarea>
+        </div>
+      </div>
+    </div>
+    <!-- all example here to simplicity--><script type="text/javascript">
+(function() {
+  head.ready(function() {
+    var $dest1, $dest2, $source, dendrite_obj;
+    dendrite_obj = new Dendrite;
+    $source = $('#source textarea');
+    $source.keydown(function(evnt) {
+      var before_length, cleanup, send_data, which;
+      which = event.which;
+      before_length = $source.val().length;
+      send_data = function() {
+        var value;
+        value = $source.val();
+        if (before_length < value.length) {
+          dendrite_obj.publish('data_updated', value);
+          return dendrite_obj.publish('new_char', which);
+        }
+      };
+      cleanup = function() {
+        dendrite_obj.publish('cleanup');
+        return dendrite_obj.publish('data_updated', $source.val());
+      };
+      switch (which) {
+        case 8:
+          return setTimeout(cleanup, 0);
+        default:
+          return setTimeout(send_data, 0);
+      }
+    });
+    dendrite_obj.subscribe('data_updated', function(topic, data) {
+      var datas, symbol, up_data, value;
+      datas = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = data.length; _i < _len; _i++) {
+          symbol = data[_i];
+          _results.push(value = (up_data = symbol.toUpperCase()) && up_data === symbol ? symbol.toLowerCase() : up_data);
+        }
+        return _results;
+      })();
+      return dendrite_obj.publish('new_data', datas.join(''));
+    });
+    $dest1 = $('#destination1 textarea');
+    dendrite_obj.subscribe('new_data', function(topic, data) {
+      return $dest1.val(data);
+    });
+    dendrite_obj.subscribe('cleanup', function() {
+      return $dest1.val('');
+    });
+    $dest2 = $('#destination2 textarea');
+    dendrite_obj.subscribe('new_char', function(topic, data) {
+      return $dest2.val(function(idx, val) {
+        var delimeter;
+        delimeter = "\n" === val.substr(val.length - 1) || val === '' ? '' : ', ';
+        return val + delimeter + data;
+      });
+    });
+    return dendrite_obj.subscribe('cleanup', function() {
+      return $dest2.val(function(idx, val) {
+        return val + "\n<-deleted->\n";
+      });
+    });
+  });
+
+}).call(this);
+</script>
+  </body>
+</html>

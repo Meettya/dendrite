@@ -1,0 +1,90 @@
+doctype html
+
+html(lang='en')
+  
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title Dendrite example usage
+    
+    // head only
+    script(src='vendor/head.load-1.0.3.min.js')
+  
+    :coffeescript
+      head.load 'css/bootstrap.min.css', 'vendor/jquery-2.1.0.min.js', 'vendor/bootstrap.min.js', 'vendor/lodash-2.4.1.min.js', '../browser/dendrite.min.js'
+
+  body
+    .row
+      .col-md-3.col-sm-offset-1
+        #source.form-group
+          label.control-label Input here
+          textarea.form-control(rows="4", cols="20")
+
+      .col-md-3
+        #destination1.form-group
+          label.control-label See here
+          textarea.form-control(rows="4", cols="20", disabled)
+
+      .col-md-3
+        #destination2.form-group
+          label.control-label And here
+          textarea.form-control(rows="40", cols="20", disabled)
+
+    // all example here to simplicity
+    :coffeescript
+      head.ready ->
+        dendrite_obj = new Dendrite
+
+        $source = $('#source textarea')
+        $source.keydown (evnt) ->
+          which         = event.which
+          before_length = $source.val().length
+
+          send_data = ->
+            value = $source.val()
+            if before_length < value.length
+              dendrite_obj.publish 'data_updated', value
+              dendrite_obj.publish 'new_char', which
+
+          cleanup = ->
+            dendrite_obj.publish 'cleanup'
+            dendrite_obj.publish 'data_updated', $source.val()
+
+          switch which
+            when 8
+              setTimeout cleanup, 0
+            else
+              setTimeout send_data, 0
+
+
+        # and somewere in system module
+        dendrite_obj.subscribe 'data_updated', (topic, data) ->
+          datas = for symbol in data  
+            value = if (up_data = symbol.toUpperCase()) and up_data is symbol
+              symbol.toLowerCase()
+            else
+              up_data
+
+          dendrite_obj.publish 'new_data', datas.join ''
+
+
+
+        # and somewere in fair galaxy
+        $dest1 = $('#destination1 textarea')
+        dendrite_obj.subscribe 'new_data', (topic, data) ->
+          $dest1.val data
+
+        dendrite_obj.subscribe 'cleanup', -> $dest1.val ''
+
+
+
+        # and somewere in another fair galaxy
+        $dest2 = $('#destination2 textarea')
+        dendrite_obj.subscribe 'new_char', (topic, data) ->
+          $dest2.val (idx, val) -> 
+            delimeter = if "\n" is val.substr(val.length - 1) or val is '' then '' else ', '
+            val + delimeter + data
+
+        dendrite_obj.subscribe 'cleanup', -> $dest2.val (idx, val) -> val + "\n<-deleted->\n"
+
