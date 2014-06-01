@@ -1,3 +1,7 @@
+## 0.6.6 / 2014-03-13 08-00 PM
+
+ - Add `trace` output for errors with verbose level 'debug'
+
 ## 0.6.4 / 2014-03-13 10-00 AM
 
   - Rebuild browser pack with new clinch
