@@ -8,6 +8,9 @@ path              = require 'path'
 Clinch            = require 'clinch'
 UglifyJS          = require 'uglify-js'
 
+# its our packer - one for all
+packer = new Clinch
+
 # ANSI Terminal Colors.
 enableColors = no
 unless process.platform is 'win32'
@@ -58,22 +61,20 @@ clinch_on_the_fly = (cb) ->
     replacement :
       lodash : path.join __dirname, "web_modules", "lodash"
 
-  # its our packer
-  packer = new Clinch
   packer.buldPackage pack_config, cb
 
 # this function will create test package on the fly
 clinch_test_on_the_fly = (cb) ->
   
   pack_config = 
+    package_name : 'test_suite'
+    inject : off # nothing to inject here
     bundle : 
       dendrite_test : path.join __dirname, "test", "dendrite-test"
     replacement :
       lodash : path.join __dirname, "web_modules", "lodash"
 
-  # nothing to inject here
-  packer = new Clinch inject : off
-  packer.buldPackage 'test_suite', pack_config, cb
+  packer.buldPackage pack_config, cb
 
 minimize_code = (in_code) ->
   result = UglifyJS.minify in_code, fromString: true
