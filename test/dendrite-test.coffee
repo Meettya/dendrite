@@ -138,6 +138,12 @@ describe 'Dendrite:', ->
       dendrite_obj.publish('async', ( -> async_obj.internal_var.should.be.equal(4) and temp_var.should.be.equal(0); done() ), 2 )
       temp_var = async_obj.internal_var # got value after |publish| but before message firig
   
+    # its kinda fake test - change verbode level to show error.stack in console, but it works
+    it 'should show Error.stack when in "debug" mode', ->
+      dendrite_obj = new Dendrite verbose : 'silent' # debug
+      dendrite_obj.subscribe('callback_channel', callback_with_error)
+      dendrite_obj.publish('callback_channel')
+
   describe '#publishSync()', ->
 
     it 'just alias to #publish() and should work in some way', ->
