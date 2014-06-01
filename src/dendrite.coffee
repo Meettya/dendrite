@@ -4,7 +4,7 @@ _ = require 'lodash'
 ###
 **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
 
-@version v0.6.4
+@version v0.6.6
 @author Dmitrii Karpich  
 @copyright Dmitrii Karpich (c) 2014 under MIT Licence  
 **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
@@ -536,14 +536,17 @@ module.exports = class Dendrite
       # or just put message to log
       if @_observer_verbose_level_ >= ERROR
         console?.error """
-                      Error on call callback we got exception:
+                      Error: on call subscribe callback we got exception
                         topic     = |#{topic}|
                         callback  = |#{task[0]}|
                         watchdog  = |#{task[2]}|
-                        object    = |#{task[1]}|
+                        object    = |#{JSON?.stringify?(task[1]) || task[1]}|
                         data      = |#{data?.join ', '}|
                         error     = |#{err}|
                       """   
+      if @_observer_verbose_level_ is DEBUG and err.stack?
+        console?.error err.stack
+
     finally
       @_publishingDec()
 
