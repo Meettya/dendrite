@@ -87,13 +87,13 @@
     dendrite_obj.subscribe('new_char', function(topic, data) {
       return $dest2.val(function(idx, val) {
         var delimeter;
-        delimeter = "\n" === val.substr(val.length - 1) || val === '' ? '' : ', ';
+        delimeter = "" === val.substr(val.length - 1) || val === '' ? '' : ', ';
         return val + delimeter + data;
       });
     });
     return dendrite_obj.subscribe('cleanup', function() {
       return $dest2.val(function(idx, val) {
-        return val + "\n<-deleted->\n";
+        return val + "<-deleted->";
       });
     });
   });
