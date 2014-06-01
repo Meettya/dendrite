@@ -2,6 +2,6 @@ support
 test
 test_browser
 examples
+examples_browser
 doc
-*.sock
 .DS_Store
