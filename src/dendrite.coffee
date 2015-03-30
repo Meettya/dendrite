@@ -191,10 +191,10 @@ module.exports = class Dendrite
     So, who get f*ck about this? Not me!!!
     ###
     # Do unsubscribe on all topics
-    for topic in @_topicsToArraySplitter topics
+    for topic in @_topicsToArraySplitter(topics) when @_subscriptions_[topic]?
       
       if _.isFunction(callback)
-        for task_number,idx in @_subscriptions_[topic] when task = @_tasks_dictionary_[task_number]
+        for task_number, idx in @_subscriptions_[topic] when task = @_tasks_dictionary_[task_number]
           if _.isEqual [task[0], task[1]], [callback, context]
             @_subscriptions_[topic].splice idx, 1
       else

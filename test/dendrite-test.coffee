@@ -295,6 +295,17 @@ describe 'Dendrite:', ->
       dendrite_obj.publish('callback_channel', 'test')
       result_simple.should.not.be.true
 
+    it 'should silent unsubscribe from non-subscribed channel *widechart*', ->
+      dendrite_obj.unsubscribe 'callback_channel'
+
+    it 'should silent unsubscribe from non-subscribed channel *with function*', ->
+      dendrite_obj.unsubscribe 'callback_channel', -> tmp = true
+
+    it 'should silent unsubscribe from non-subscribed channel *with habdle*', ->
+      handle = dendrite_obj.subscribe('callback_channel', -> tmp = true)
+      dendrite_obj.unsubscribe(handle)
+      dendrite_obj.unsubscribe(handle)
+
   describe '#getListenedTopicsList()', ->
 
     it 'should return topics name with listiners', ->

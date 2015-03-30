@@ -18,7 +18,6 @@
     "chai": "*",
     "mocha": "*",
     "jade": "*",
-    "stitch": "*",
     "clinch": "*",
     "uglify-js": "*"
   },
