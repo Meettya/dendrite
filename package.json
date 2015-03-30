@@ -1,6 +1,6 @@
 {
   "name": "dendrite",
-  "version": "0.6.6",
+  "version": "0.7.1",
   "description": "An extended Observer pattern implementation, worked at any JavaScript environment",
   "keywords": [
     "observer",
@@ -30,7 +30,7 @@
   },
   "main": "./lib/dendrite",
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.10.0"
   },
   "license": "MIT"
 }

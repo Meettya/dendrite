@@ -1,6 +1,15 @@
+## 0.7.1 / 2015-03-31 12-40 AM
+
+  - Fix bug with unsubscribe from empty (non-subscribed) channel with funtion
+  - Rebuild node lib
+  - Rebuild browser lib
+  - Some small fix
+  - Change min node version to 0.10
+  - Add travis for 0.12
+
 ## 0.6.6 / 2014-03-13 08-00 PM
 
- - Add `trace` output for errors with verbose level 'debug'
+  - Add `trace` output for errors with verbose level 'debug'
 
 ## 0.6.4 / 2014-03-13 10-00 AM
 
