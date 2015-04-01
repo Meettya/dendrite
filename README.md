@@ -1,8 +1,7 @@
+[![Join the chat at https://gitter.im/Meettya/dendrite](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Meettya/dendrite?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://secure.travis-ci.org/Meettya/dendrite.png)](http://travis-ci.org/Meettya/dendrite)  [![Dependency Status](https://gemnasium.com/Meettya/dendrite.png)](https://gemnasium.com/Meettya/dendrite)
 
 # dendrite
-
-[![Join the chat at https://gitter.im/Meettya/dendrite](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Meettya/dendrite?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 An extended Observer pattern implementation, (must)worked at any JavaScript environment.
 
