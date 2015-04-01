@@ -2,6 +2,8 @@
 
 # dendrite
 
+[![Join the chat at https://gitter.im/Meettya/dendrite](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Meettya/dendrite?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 An extended Observer pattern implementation, (must)worked at any JavaScript environment.
 
 It designed to simplify creation of low coupling and high cohesion systems with upgraded Dendrite realization.
