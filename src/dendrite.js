@@ -25,7 +25,7 @@ class Dendrite {
   constructor(options) {
     this.observerVerboseLevel = this.parseVerboseLevel(options);
     this.publishingCounter = 0;
-    this.subscriptions = {};
+    this.subscriptions = new Map();
     this.tasksCounter = 0;
     this.tasksDictionary = [];
     this.unsubscribeQueue = [];
@@ -53,11 +53,12 @@ class Dendrite {
     this.tasksDictionary[taskNumber] = [callback, context, watchdog];
 
     for (let topic of splitedTopics) {
-      if (!this.subscriptions[topic]){
-        this.subscriptions[topic] = [];
+      let collector = [];
+      if (this.subscriptions.has(topic)){
+        collector = this.subscriptions.get(topic);
       }
-      this.subscriptions[topic].push(taskNumber);
-
+      collector.push(taskNumber);
+      this.subscriptions.set(topic, collector);
       // do not cycle this
       if (!this.isInternalChannel(topic)) {
         this.publishAsync(INTERNAL_BUS_NAME_SUBSCRIBE, topic);
@@ -97,27 +98,31 @@ class Dendrite {
      */
     splitedTopics = this.topicsToArraySplitter(topics);
     for (let topic of splitedTopics) {
-      if (!this.subscriptions[topic]){
+      if (!this.subscriptions.has(topic)){
         continue;
       }
       if (typeof callback === "function") {
-        for (let [idx, taskNumber] of this.subscriptions[topic].entries()) {
+        let collector = this.subscriptions.get(topic);
+
+        for (let [idx, taskNumber] of collector.entries()) {
           let [taskCallback, taskContext] = this.tasksDictionary[taskNumber];
 
           if (Object.is(taskCallback, callback)) {
             if (context) {
               if (Object.is(taskContext, context)) {
-                this.subscriptions[topic].splice(idx, 1);
+                collector.splice(idx, 1);
               }
             } else {
-              this.subscriptions[topic].splice(idx, 1);
+              collector.splice(idx, 1);
             }
           }
         }
+        this.subscriptions.set(topic, collector);
       } else {
         // If no callback is given, then remove all subscriptions to this topic
-        Reflect.deleteProperty(this.subscriptions, topic);
+        this.subscriptions.delete(topic);
       }
+
       if (!this.isInternalChannel(topic)) {
         this.publishAsync(INTERNAL_BUS_NAME_UNSUBSCRIBE, topic);
       }
@@ -155,7 +160,7 @@ class Dendrite {
   getListenedTopicsList() {
     let result = [];
 
-    for (let [topic, listiners] of Object.entries(this.subscriptions)) {
+    for (let [topic, listiners] of this.subscriptions.entries()) {
       if (listiners.length && !this.isInternalChannel(topic)) {
         result.push(topic);
       }
@@ -170,7 +175,7 @@ class Dendrite {
     if (typeof topic !== "string" || topic === "") {
       throw this.isTopicListenedErrorMessage(topic, "isTopicListened", "topic");
     }
-    return !!(this.subscriptions[topic] && this.subscriptions[topic].length);
+    return !!this.getSubscribtionsCount(topic);
   }
 
   /**
@@ -317,10 +322,10 @@ class Dendrite {
     splitedTopics = this.topicsToArraySplitter(topics, false);
 
     for (let topic of splitedTopics) {
-      if (!this.subscriptions[topic]) {
+      if (!this.subscriptions.has(topic)) {
         continue;
       }
-      for (let taskNumber of this.subscriptions[topic]) {
+      for (let taskNumber of this.subscriptions.get(topic)) {
         this.publishingInc();
         publishEngine.call(this, topic, this.tasksDictionary[taskNumber], data);
       }
@@ -381,10 +386,10 @@ class Dendrite {
    * Return subscriptions count for topic (for test etc.)
    */
   getSubscribtionsCount(topic) {
-    let subscriptions = this.subscriptions[topic];
+    if (this.subscriptions.has(topic)) {
+      let collector = this.subscriptions.get(topic);
 
-    if (subscriptions) {
-      return subscriptions.length;
+      return collector.length;
     }
   }
 
