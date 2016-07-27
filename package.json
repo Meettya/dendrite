@@ -11,14 +11,22 @@
   ],
   "author": "Dmitrii Karpich <meettya@gmail.com>",
   "dependencies": {
+    "core-js": "^2.4.1",
     "lodash": "*"
   },
   "devDependencies": {
-    "coffee-script": ">=1.7.0",
+    "babel": "^6.5.2",
+    "babel-core": "^6.11.4",
+    "babel-fast-presets": "0.0.2",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
     "chai": "*",
-    "mocha": "*",
-    "jade": "*",
     "clinch": "*",
+    "clinch.coffee": "*",
+    "clinch.js6": "*",
+    "coffee-script": ">=1.7.0",
+    "jade": "*",
+    "mocha": "*",
     "uglify-js": "*"
   },
   "scripts": {
