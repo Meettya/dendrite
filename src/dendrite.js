@@ -18,8 +18,8 @@ const ERROR   = 1;
 const SILENT  = 0;
 
 // Internal buses name for 'active' observer
-const INTERNAL_BUS_NAME_SUBSCRIBE = 'internal_bus_name_subscribe'; //Symbol("internal bus");
-const INTERNAL_BUS_NAME_UNSUBSCRIBE = 'internal_bus_name_unsubscribe'; //Symbol("internal bus");
+const INTERNAL_BUS_NAME_SUBSCRIBE = Symbol("internal subscribe bus");
+const INTERNAL_BUS_NAME_UNSUBSCRIBE = Symbol("internal unsubscribe bus");
 
 class Dendrite {
   constructor(options) {
@@ -43,7 +43,7 @@ class Dendrite {
    */
   subscribeGuarded(topics, callback, watchdog, context) {
     // Make sure that each argument is valid
-    if (!(typeof topics === "string" && typeof callback === "function" && ( !watchdog || typeof watchdog === "function" ))) {
+    if (!((typeof topics === "string" || this.isInternalChannel(topics) ) && typeof callback === "function" && ( !watchdog || typeof watchdog === "function" ))) {
       throw this.subscribeErrorMessage(topics, callback, watchdog, context);
     }
 
@@ -79,7 +79,7 @@ class Dendrite {
     }
 
     // if somthing go wrong
-    if (typeof topics !== "string") {
+    if (!(typeof topics === "string" || this.isInternalChannel(topics))) {
       throw this.unsubscribeErrorMessage(topics, callback, context)
     }
 
@@ -315,7 +315,7 @@ class Dendrite {
       [publishEngine, unsubscribeEngine] = this.getPublisherEngine(type);
 
     // if somthing go wrong
-    if (typeof topics !== "string") {
+    if (!(typeof topics === "string" || this.isInternalChannel(topics))) {
       throw this.publishErrorMessage(topics, data);
     }
 
@@ -359,8 +359,8 @@ class Dendrite {
       usedTopics = {};
 
     // for case if internal bus used
-    if (topics === INTERNAL_BUS_NAME_SUBSCRIBE) {
-      return [INTERNAL_BUS_NAME_SUBSCRIBE];
+    if (this.isInternalChannel(topics)) {
+      return [topics];
     }
 
     rawSplited = topics.split(' ');
