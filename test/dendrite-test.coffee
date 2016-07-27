@@ -3,10 +3,12 @@ Test suite for node AND browser in one file
 So, we are need some data from global
 Its so wrong, but its OK for test
 ###
-Dendrite = if GLOBAL?.lib_path
+DendriteLib = if GLOBAL?.lib_path
     require "#{lib_path}dendrite"
   else
     require '..'
+
+Dendrite = DendriteLib.default
 
 describe 'Dendrite:', ->
   
@@ -19,7 +21,7 @@ describe 'Dendrite:', ->
     topics: 'callback_simple'
     callback: callback_simple
     watchdog: undefined
-    context: {}
+    context: undefined
 
   callback_with_args = (topic, a, b) ->
     result_with_args = a + b
@@ -60,7 +62,7 @@ describe 'Dendrite:', ->
 
       super_dendrite_obj = new SuperDendrite verbose : 'debug'
       super_dendrite_obj.makeFoo()
-      super_dendrite_obj._observer_verbose_level_.should.be.equal 3
+      super_dendrite_obj.getVerboseLevel().should.be.equal 3
       super_dendrite_obj.foo.should.to.be.true
 
   describe '#subscribe()', ->
@@ -76,7 +78,7 @@ describe 'Dendrite:', ->
     it 'should skip duplicate topic at register', ->
       dendrite_obj.subscribe('callback_simple callback_simple', callback_simple)
       # yap, its durty but it only for test
-      dendrite_obj._subscriptions_['callback_simple'].length.should.be.equal 1
+      dendrite_obj.getSubscribtionsCount('callback_simple').should.be.equal 1
 
   describe '#subscribeGuarded()', ->
 
@@ -213,7 +215,7 @@ describe 'Dendrite:', ->
 
       dendrite_obj.subscribe 'callback_with_args', args_cb
       dendrite_obj.publishAsync 'callback_with_args', 5, 7
-      temp_var = 10    
+      temp_var = 10
 
   describe '#unsubscribe()', ->
     
@@ -276,7 +278,7 @@ describe 'Dendrite:', ->
       dendrite_obj = new Dendrite verbose : 'error'
       handle = dendrite_obj.subscribe('callback_channel', callback_simple)
       # its internal thing, but we are must use it to simulate situation
-      dendrite_obj._publishingInc()
+      dendrite_obj.publishingInc()
       dendrite_obj.unsubscribe(handle)
       dendrite_obj.publish('callback_channel', 'test') # must fired up event
       result_simple.should.be.true
@@ -285,9 +287,9 @@ describe 'Dendrite:', ->
       dendrite_obj = new Dendrite verbose : 'error'
       handle = dendrite_obj.subscribe('callback_channel', callback_simple)
       # its internal thing, but we are must use it to simulate situation
-      dendrite_obj._publishingInc()
+      dendrite_obj.publishingInc()
       dendrite_obj.unsubscribe(handle)
-      dendrite_obj._publishingDec()
+      dendrite_obj.publishingDec()
       dendrite_obj.publish('callback_channel', 'test') # must fired up event
       # yes, we are force re-init variable
       result_simple = false
@@ -398,4 +400,3 @@ describe 'Dendrite:', ->
       dendrite_obj.off 'subscribe'
       dendrite_obj.subscribe 'foo', ->
       process.nextTick done
-
