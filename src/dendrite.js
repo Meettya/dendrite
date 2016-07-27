@@ -27,7 +27,7 @@ class Dendrite {
     this.publishingCounter = 0;
     this.subscriptions = new Map();
     this.tasksCounter = 0;
-    this.tasksDictionary = [];
+    this.tasksDictionary = new WeakMap();
     this.unsubscribeQueue = [];
   }
 
@@ -47,17 +47,17 @@ class Dendrite {
       throw this.subscribeErrorMessage(topics, callback, watchdog, context);
     }
 
-    let taskNumber = this.getNextTaskNumber(),
+    let taskObject = {},
       splitedTopics = this.topicsToArraySplitter(topics);
 
-    this.tasksDictionary[taskNumber] = [callback, context, watchdog];
+    this.tasksDictionary.set(taskObject, [callback, context, watchdog]);
 
     for (let topic of splitedTopics) {
       let collector = [];
       if (this.subscriptions.has(topic)){
         collector = this.subscriptions.get(topic);
       }
-      collector.push(taskNumber);
+      collector.push(taskObject);
       this.subscriptions.set(topic, collector);
       // do not cycle this
       if (!this.isInternalChannel(topic)) {
@@ -89,13 +89,6 @@ class Dendrite {
       return this;
     }
 
-    /**
-     * IMPORTANT! Yes, we are remove subscriptions ONLY, 
-     * and keep tasks_dictionary untouched because its not necessary.
-     * Dictionary compacted, calculations of links to dictionary from subscriptions
-     * may be nightmare - its like pointers in C, exceptionally funny in async mode. 
-     * So, who get f*ck about this? Not me!!!
-     */
     splitedTopics = this.topicsToArraySplitter(topics);
     for (let topic of splitedTopics) {
       if (!this.subscriptions.has(topic)){
@@ -104,16 +97,20 @@ class Dendrite {
       if (typeof callback === "function") {
         let collector = this.subscriptions.get(topic);
 
-        for (let [idx, taskNumber] of collector.entries()) {
-          let [taskCallback, taskContext] = this.tasksDictionary[taskNumber];
+        for (let [idx, taskObject] of collector.entries()) {
+          let taskPack = this.tasksDictionary.get(taskObject);
 
-          if (Object.is(taskCallback, callback)) {
-            if (context) {
-              if (Object.is(taskContext, context)) {
+          if (taskPack) {
+            let [taskCallback, taskContext] = taskPack;
+
+            if (Object.is(taskCallback, callback)) {
+              if (context) {
+                if (Object.is(taskContext, context)) {
+                  collector.splice(idx, 1);
+                }
+              } else {
                 collector.splice(idx, 1);
               }
-            } else {
-              collector.splice(idx, 1);
             }
           }
         }
@@ -244,13 +241,6 @@ class Dendrite {
   }
 
   /**
-   * Self-incapsulated task auto-incremented counter
-   */
-  getNextTaskNumber() {
-    return this.tasksCounter = this.tasksCounter + 1;
-  }
-
-  /**
    * Internal method for handler parser
    */
   handlerParser(handler, callback, context) {
@@ -325,9 +315,13 @@ class Dendrite {
       if (!this.subscriptions.has(topic)) {
         continue;
       }
-      for (let taskNumber of this.subscriptions.get(topic)) {
-        this.publishingInc();
-        publishEngine.call(this, topic, this.tasksDictionary[taskNumber], data);
+      for (let taskObject of this.subscriptions.get(topic)) {
+        let taskPack = this.tasksDictionary.get(taskObject);
+
+        if (taskPack) {
+          this.publishingInc();
+          publishEngine.call(this, topic, taskPack, data);
+        }
       }
     }
     unsubscribeEngine.call(this);
@@ -494,7 +488,6 @@ class Dendrite {
     return TypeError(message);
   }
 
-
   /**
    * Internal method for publish error message constructor
    */
@@ -527,8 +520,6 @@ class Dendrite {
 
     return TypeError(message);
   }
-
-
 }
 
 export default Dendrite;
