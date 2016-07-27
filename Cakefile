@@ -6,10 +6,14 @@ fs                = require 'fs'
 path              = require 'path'
 {spawn, exec}     = require 'child_process'
 Clinch            = require 'clinch'
+clinch_coffee     = require 'clinch.coffee'
+clinch_js6        = require 'clinch.js6'
 UglifyJS          = require 'uglify-js'
 
 # its our packer - one for all
 packer = new Clinch
+packer.addPlugin clinch_coffee
+      .addPlugin clinch_js6
 
 # ANSI Terminal Colors.
 enableColors = no
