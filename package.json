@@ -10,15 +10,11 @@
     "async"
   ],
   "author": "Dmitrii Karpich <meettya@gmail.com>",
-  "dependencies": {
-    "core-js": "^2.4.1",
-    "lodash": "*"
-  },
   "standard": {
     "parser": "babel-eslint"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
+    "babel-cli":"*",
     "babel-core": "^6.11.4",
     "babel-eslint": "^6.1.2",
     "babel-fast-presets": "0.0.2",
@@ -29,13 +25,16 @@
     "clinch.coffee": "*",
     "clinch.js6": "*",
     "coffee-script": ">=1.7.0",
+    "core-js": "^2.4.1",
     "jade": "*",
+    "lodash": "*",
     "mocha": "*",
     "standard": "^7.1.2",
     "uglify-js": "*"
   },
   "scripts": {
-    "test": "cake test"
+    "test": "cake test",
+    "build_lib": "./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
@@ -43,7 +42,7 @@
   },
   "main": "./lib/dendrite",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=0.12.0"
   },
   "license": "MIT"
 }
