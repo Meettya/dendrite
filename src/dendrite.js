@@ -9,8 +9,6 @@
  * Thanks to [Joe Zim](http://www.joezimjs.com) for original [Publish/Subscribe plugin](http://www.joezimjs.com/projects/publish-subscribe-jquery-plugin/) for jQuery
  */
 
-import 'core-js'
-
 // Verbose levels constants
 const DEBUG = 3
 const WARNING = 2
@@ -451,7 +449,7 @@ class Dendrite {
    */
   parseVerboseLevel (options) {
     if (options && typeof options === 'object') {
-      let level = Reflect.get(options, 'verbose')
+      let level = options.verbose
 
       if (level) {
         if (typeof level !== 'string') {
@@ -523,3 +521,5 @@ class Dendrite {
 }
 
 export default Dendrite
+// to fix node.js require
+module.exports = Dendrite
