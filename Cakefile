@@ -31,9 +31,9 @@ if enableColors
 log = (message, color, explanation) ->
   console.log color + message + reset + ' ' + (explanation or '')
 
-# Run a CoffeeScript through our node/coffee interpreter.
+# Run a ES6 through our node/ES6 interpreter.
 run = (args, cb) ->
-  proc =         spawn 'node', ['./node_modules/.bin/coffee'].concat(args)
+  proc =         spawn './node_modules/.bin/babel', args
   proc.stderr.on 'data', (buffer) -> log buffer.toString(), red
   proc.on        'exit', (status) ->
     process.exit(1) if status != 0
@@ -62,23 +62,19 @@ clinch_on_the_fly = (cb) ->
   pack_config = 
     bundle : 
       Dendrite : "#{__dirname}"
-    replacement :
-      lodash : path.join __dirname, "web_modules", "lodash"
 
-  packer.buldPackage pack_config, cb
+  packer.buildPackage pack_config, cb
 
 # this function will create test package on the fly
 clinch_test_on_the_fly = (cb) ->
   
   pack_config = 
     package_name : 'test_suite'
-    inject : off # nothing to inject here
     bundle : 
       dendrite_test : path.join __dirname, "test", "dendrite-test"
-    replacement :
-      lodash : path.join __dirname, "web_modules", "lodash"
+      Dendrite : "#{__dirname}"
 
-  packer.buldPackage pack_config, cb
+  packer.buildPackage pack_config, cb
 
 minimize_code = (in_code) ->
   result = UglifyJS.minify in_code, fromString: true
@@ -91,9 +87,7 @@ build_jade = (work_dir, src_dir) ->
     log ' -> build html from jade for browser done', green
 
 task 'build', 'build module from source', build = (cb) ->
-  files = fs.readdirSync 'src'
-  files = ('src/' + file for file in files when file.match(/\.coffee$/))
-  run ['-c', '-o', 'lib/'].concat(files), ->
+  run ['src', '-o', 'lib'], ->
     log ' -> build done', green
   cb() if typeof cb is 'function'
   
