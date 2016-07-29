@@ -1,16 +1,18 @@
 [![Join the chat at https://gitter.im/Meettya/dendrite](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Meettya/dendrite?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://secure.travis-ci.org/Meettya/dendrite.png)](http://travis-ci.org/Meettya/dendrite)  [![Dependency Status](https://gemnasium.com/Meettya/dendrite.png)](https://gemnasium.com/Meettya/dendrite)
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 # dendrite
 
-An extended Observer pattern implementation, (must)worked at any JavaScript environment.
+An extended Pub/Sub pattern implementation, (must)worked at any JavaScript environment.
 
 It designed to simplify creation of low coupling and high cohesion systems with upgraded Dendrite realization.
 
-Dendrite was created on base of [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin), plus have some unique methods like #publishAsync() and #subscribeGuarded().
+Dendrite was created on base of [JZ-Publish-Subscribe-jQuery-Plugin](https://github.com/joezimjs/JZ-Publish-Subscribe-jQuery-Plugin), plus have some unique methods like #publishAsync() and #subscribeGuarded(), also possibility to listen dendrite instance itself for subscribe/unsubscribe events.
 
-Dendrite build as CommonJS module, but actually it may be used in browser too. You need to resolve [underscore](http://underscorejs.org/) or [lodash](http://lodash.com/) dependency and get packed verson (see _browser/dendrite.js_ or _browser/dendrite.js.min_ ) or pack all you project with [clinch](https://github.com/Meettya/clinch).
+Dendrite was designed as CommonJS module (and now ES6 as well) for node.js. All modern futures are supported from node v0.12, so no additional requirements needed.
 
+For browser usage Dendrite was build as stand-alone file (see [build/dendrite.js](https://github.com/Meettya/dendrite/blob/master/build/dendrite.js) or [build/dendrite.min.js](https://github.com/Meettya/dendrite/blob/master/build/dendrite.min.js) ). For use all modern future in modern browser it will be resolved `setImmediate` dependency, for other browsers may be needed resolve `Symbol, Map, WeakMap` with [babel-polyfill](http://babeljs.io/docs/usage/polyfill/) or [core-js](https://github.com/zloirock/core-js) or another es-6 shim.
 
 ## Description:
 
@@ -22,13 +24,7 @@ To have some more benefits from Dendrite you should be used #publishAsync() and 
 
 Moreover - Dendrite may attach listeners to 'subscribe' and 'unsubscribe' events, its allow add activity to listened topics and stop it on unlistened, for example.
 
-See the examples below or test files.
-
-## Documentation:
-
-See [full documentation](http://meettya.github.com/dendrite/doc/), created with [codo](https://github.com/netzpirat/codo).
-
-Also quick link to module interface docs - [Class: Dendrite](http://meettya.github.com/dendrite/doc/classes/Dendrite.html).
+See the examples below, test files and in `examples` and `examples_browser` directory.
 
 ## Install:
 
@@ -36,13 +32,10 @@ Also quick link to module interface docs - [Class: Dendrite](http://meettya.gith
 
 ## Usage:
 
-All examples written in CoffeeScript, you may use plain JS instead (but why?).
-
-
 At first you must create Dendrite object to interact with it
     
-    Dendrite = require 'dendrite'
-    dendrite_obj = new Dendrite
+    import Dendrite from 'dendrite'
+    let dendrite_obj = new Dendrite()
 
 Constructor have some options on create
 
@@ -59,36 +52,43 @@ The callback function receives two arguments:
   
 Note: #subscribe() returns a 'handle' that can be used to unsubscribe easily
     
-    handle = dendrite_obj.subscribe("foo", (topic, data) -> console.log data, topic )
+    let handle = dendrite_obj.subscribe("foo", (topic, data) => { console.log(data, topic) })
 
 Subscribe to multiple topics at once
 'foo', 'bar', and 'baz' are three different topics
     
-    handle = dendrite_obj.subscribe("foo bar baz", (topic, data) -> console.log data, topic )
+    let handle = dendrite_obj.subscribe("foo bar baz", (topic, data) => { console.log(data, topic) })
 
 Subscribe with a context
 Callback now has its this variable assigned to the specified object
     
-    obj = 
-      internal_data: 0
-      func: (topic, data) -> console.log data, topic, @internal_data
+    let obj = {
+      internal_data: 0,
+      func: (topic, data) => { 
+        console.log(data, topic, this.internal_data)
+      }
+    }
 
-    handle = dendrite_obj.subscribe("foo", obj.func, obj)
+    let handle = dendrite_obj.subscribe("foo", obj.func, obj)
 
 ### Subscribing with watchdog:
 
 Guarded subscription give as powerful technique to manage errors in subscribed functions
     
-    dendrite_obj = new Dendrite verbose : 'silent'
+    let dendrite_obj = new Dendrite({ verbose: 'silent' })
 
-    callback = (topic, data) -> throw Error "Die at #{topic}"
-    watchdog = (err, options) -> 
-      console.log "Error string: | #{err} |"
-      console.log "Error detail", options
-      null
-    handle = dendrite_obj.subscribeGuarded 'foo', callback, watchdog
+    let callback = (topic, data) => {
+      throw Error(`Die at ${topic}`)
+    }
 
-    dendrite_obj.publish 'foo', 'some data'
+    let watchdog = (err, options) => {
+      console.log(`Error string: | ${err} |`)
+      console.log("Error detail", options)
+    }
+
+    let handle = dendrite_obj.subscribeGuarded('foo', callback, watchdog)
+
+    dendrite_obj.publish('foo', 'some data')
 
 return to console
 
@@ -152,21 +152,21 @@ This method will return list of topics with listiners on it.
 
 This method will return boolean value - is topic have listeners or not
 
-    is_listened = dendrite_obj.isTopicListened 'foo'
+    let is_listened = dendrite_obj.isTopicListened('foo')
 
 ### Attach callback to dendrite object on subscribe/unsubscribe events
 
 This method attach listeners to internal events - subscribe/unsubscribe.
 May be helpful if logic request ACTIVE observer
 
-    handler = dendrite_obj.on 'subscribe', (topic) -> console.log "subscribed to |#{topic}|"
+    let handler = dendrite_obj.on('subscribe', (topic) => { console.log(`subscribed to |${topic}|`)})
 
 ### Detach callback from dendrite object on subscribe/unsubscribe events
 
 This method dettach listeners from internal events - subscribe/unsubscribe.
 
-    dendrite_obj.off 'subscribe'  # remove ALL listeners
-    dendrite_obj.off handler      # remove ONLY one listener
+    dendrite_obj.off('subscribe')  // remove ALL listeners
+    dendrite_obj.off(handler)      // remove ONLY one listener
 
 ## General Notes
 
@@ -192,11 +192,11 @@ with three properties, named "topics", "callback", and "context" that correspond
 to the three parameters that you sent in (or context will be a blank object if
 no context was provided):
 
-    handle =
-      topics : "the topics you sent in"
-      callback : (topic, data)-> 
-        // this is the callback function you sent in
+    handle = {
+      topics : "the topics you sent in",
+      callback : (topic, data) => {}, // this is the callback function you sent in
       context : contextObjYouSentIn || {}
+    }
 
 ### Callback Topic Argument:
 The first argument that the callback receives is the topic in which the
@@ -204,6 +204,3 @@ function was subscribed and invoked from. This will always be a string
 containing only one topic, even if the #publish() function is called with
 multiple topics because the callback will be run once for each individual
 topic that is published.
-
-## Need you help!
-If you feel ability to translate good Russain README (I'm add it soon) to correct English - please, ping me. Thanks in advance!
