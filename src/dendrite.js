@@ -336,7 +336,7 @@ class Dendrite {
    */
   publishingDec () {
     if (!this.publishingCounter) {
-      throw Error('Error on decrement publishing counter - this.publishingCounte is |#{this.publishingCounte}|')
+      throw Error(`Error on decrement publishing counter - this.publishingCounte is |${this.publishingCounte}|`)
     }
     this.publishingCounter = this.publishingCounter - 1
   }
