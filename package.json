@@ -14,7 +14,7 @@
     "parser": "babel-eslint"
   },
   "devDependencies": {
-    "babel-cli":"*",
+    "babel-cli": "*",
     "babel-core": "^6.11.4",
     "babel-eslint": "^6.1.2",
     "babel-fast-presets": "0.0.2",
