@@ -94,7 +94,6 @@ var Dendrite = function () {
     this.observerVerboseLevel = this.parseVerboseLevel(options);
     this.publishingCounter = 0;
     this.subscriptions = new Map();
-    this.tasksCounter = 0;
     this.tasksDictionary = new WeakMap();
     this.unsubscribeQueue = [];
   }
