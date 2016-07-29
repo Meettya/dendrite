@@ -8,11 +8,12 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     title Dendrite example usage
     
+    script(src='vendor/core-js.shim.min.js')
     // head only
     script(src='vendor/head.load-1.0.3.min.js')
   
     :coffeescript
-      head.load 'css/bootstrap.min.css', 'vendor/jquery-2.1.0.min.js', 'vendor/bootstrap.min.js', 'vendor/lodash-2.4.1.min.js', '../browser/dendrite.min.js'
+      head.load 'css/bootstrap.min.css', 'vendor/jquery-2.1.0.min.js', 'vendor/bootstrap.min.js', '../browser/dendrite.min.js'
 
   body
     .row

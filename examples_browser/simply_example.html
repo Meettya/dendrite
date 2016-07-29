@@ -5,10 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dendrite example usage</title>
+    <script src="vendor/core-js.shim.min.js"></script>
     <!-- head only-->
     <script src="vendor/head.load-1.0.3.min.js"></script><script type="text/javascript">
 (function() {
-  head.load('css/bootstrap.min.css', 'vendor/jquery-2.1.0.min.js', 'vendor/bootstrap.min.js', 'vendor/lodash-2.4.1.min.js', '../browser/dendrite.min.js');
+  head.load('css/bootstrap.min.css', 'vendor/jquery-2.1.0.min.js', 'vendor/bootstrap.min.js', '../build/dendrite.min.js');
 
 }).call(this);
 </script>
@@ -66,13 +67,13 @@
     dendrite_obj.subscribe('data_updated', function(topic, data) {
       var datas, symbol, up_data, value;
       datas = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = data.length; _i < _len; _i++) {
-          symbol = data[_i];
-          _results.push(value = (up_data = symbol.toUpperCase()) && up_data === symbol ? symbol.toLowerCase() : up_data);
+        var i, len, results;
+        results = [];
+        for (i = 0, len = data.length; i < len; i++) {
+          symbol = data[i];
+          results.push(value = (up_data = symbol.toUpperCase()) && up_data === symbol ? symbol.toLowerCase() : up_data);
         }
-        return _results;
+        return results;
       })();
       return dendrite_obj.publish('new_data', datas.join(''));
     });
@@ -87,13 +88,13 @@
     dendrite_obj.subscribe('new_char', function(topic, data) {
       return $dest2.val(function(idx, val) {
         var delimeter;
-        delimeter = "" === val.substr(val.length - 1) || val === '' ? '' : ', ';
+        delimeter = "\n" === val.substr(val.length - 1) || val === '' ? '' : ', ';
         return val + delimeter + data;
       });
     });
     return dendrite_obj.subscribe('cleanup', function() {
       return $dest2.val(function(idx, val) {
-        return val + "<-deleted->";
+        return val + "\n<-deleted->\n";
       });
     });
   });

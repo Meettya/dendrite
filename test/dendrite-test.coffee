@@ -3,6 +3,7 @@ Test suite for node AND browser in one file
 So, we are need some data from global
 Its so wrong, but its OK for test
 ###
+
 Dendrite = if GLOBAL?.lib_path
     require "#{lib_path}dendrite"
   else
@@ -19,7 +20,7 @@ describe 'Dendrite:', ->
     topics: 'callback_simple'
     callback: callback_simple
     watchdog: undefined
-    context: {}
+    context: undefined
 
   callback_with_args = (topic, a, b) ->
     result_with_args = a + b
@@ -60,7 +61,7 @@ describe 'Dendrite:', ->
 
       super_dendrite_obj = new SuperDendrite verbose : 'debug'
       super_dendrite_obj.makeFoo()
-      super_dendrite_obj._observer_verbose_level_.should.be.equal 3
+      assert.equal super_dendrite_obj.getVerboseLevel(), 3
       super_dendrite_obj.foo.should.to.be.true
 
   describe '#subscribe()', ->
@@ -76,7 +77,7 @@ describe 'Dendrite:', ->
     it 'should skip duplicate topic at register', ->
       dendrite_obj.subscribe('callback_simple callback_simple', callback_simple)
       # yap, its durty but it only for test
-      dendrite_obj._subscriptions_['callback_simple'].length.should.be.equal 1
+      assert.equal dendrite_obj.getSubscribtionsCount('callback_simple'), 1
 
   describe '#subscribeGuarded()', ->
 
@@ -106,18 +107,18 @@ describe 'Dendrite:', ->
     it 'should fired up event with args call', ->
       dendrite_obj.subscribe('callback_with_args', callback_with_args)
       dendrite_obj.publish('callback_with_args', 5, 7)
-      result_with_args.should.be.equal 12
+      assert.equal result_with_args, 12
 
     it 'should fired up some different events on one channel', ->
       dendrite_obj.subscribe('callback_channel', callback_simple)
       dendrite_obj.subscribe('callback_channel', callback_with_args)
       dendrite_obj.publish('callback_channel', 10, 32)
-      result_simple.should.be.true and result_with_args.should.be.equal 42
+      result_simple.should.be.true and assert.equal result_with_args, 42
       
     it 'should not fired up events on different channel call', ->
       dendrite_obj.subscribe('callback_channel', callback_simple)
       dendrite_obj.publish('unknown_callback_channel', 10, 20)
-      result_simple.should.not.be.true and result_with_args.should.be.not.equal 30
+      result_simple.should.not.be.true and assert.notEqual result_with_args, 30
       
     it 'should not stop all on some broken events callback', ->
       dendrite_obj = new Dendrite verbose : 'silent'
@@ -129,13 +130,13 @@ describe 'Dendrite:', ->
     it 'should fired up one subscriber on some different chanel', ->
       dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
       dendrite_obj.publish('one two four', 2, 6)
-      huge_logic.internal_var.should.be.equal 132
+      assert.equal huge_logic.internal_var, 132
 
     it 'should work with async function', (done) ->
       temp_var = null
       dendrite_obj.subscribe('async', async_obj.run_function, async_obj)
       # dendrite_obj.subscribe('async', sync_obj.run_function, sync_obj)
-      dendrite_obj.publish('async', ( -> async_obj.internal_var.should.be.equal(4) and temp_var.should.be.equal(0); done() ), 2 )
+      dendrite_obj.publish('async', ( -> assert.equal(async_obj.internal_var, 4) and assert.equal(temp_var, 0); done() ), 2 )
       temp_var = async_obj.internal_var # got value after |publish| but before message firig
   
     # its kinda fake test - change verbode level to show error.stack in console, but it works
@@ -149,7 +150,7 @@ describe 'Dendrite:', ->
     it 'just alias to #publish() and should work in some way', ->
       dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
       dendrite_obj.publish('one two four', 2, 6)
-      huge_logic.internal_var.should.be.equal 132
+      assert.equal huge_logic.internal_var, 132
 
   describe '#publishAsync()', ->
 
@@ -166,7 +167,7 @@ describe 'Dendrite:', ->
     it 'should fired up event with args call', (done) ->
       args_cb = ( args... ) ->
         callback_with_args.apply @, args
-        result_with_args.should.be.equal 12
+        assert.equal result_with_args, 12
         done()
 
       dendrite_obj.subscribe 'callback_with_args', args_cb
@@ -195,7 +196,7 @@ describe 'Dendrite:', ->
           # console.log "name = #{name}"
           if ( @counter -= 1 ) is 0
             # console.log "zerroed!!"
-            void_obj.result.should.be.true and args_obj.result.should.be.equal 42
+            void_obj.result.should.be.true and assert.equal args_obj.result, 42
             done()
 
       dendrite_obj.subscribe 'callback_channel', args_obj.run, args_obj
@@ -208,12 +209,12 @@ describe 'Dendrite:', ->
 
       args_cb = ( args... ) ->
         callback_with_args.apply @, args
-        (result_with_args.should.be.equal 12 ) and ( temp_var.should.to.be.equal 10 )
+        (assert.equal result_with_args, 12 ) and ( assert.equal temp_var, 10 )
         done()
 
       dendrite_obj.subscribe 'callback_with_args', args_cb
       dendrite_obj.publishAsync 'callback_with_args', 5, 7
-      temp_var = 10    
+      temp_var = 10
 
   describe '#unsubscribe()', ->
     
@@ -228,7 +229,7 @@ describe 'Dendrite:', ->
       dendrite_obj.subscribe('callback_channel', callback_with_args)
       dendrite_obj.unsubscribe('callback_channel', callback_simple)
       dendrite_obj.publish('callback_channel', 22, 43 )
-      result_simple.should.not.be.true and result_with_args.should.be.equal 65
+      result_simple.should.not.be.true and assert.equal result_with_args, 65
       
     it 'may not unsubscribe unnamed (un-referenced) function', ->
       tmp = false
@@ -258,25 +259,25 @@ describe 'Dendrite:', ->
       dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
       dendrite_obj.unsubscribe('one two four')
       dendrite_obj.publish('one two three four', 2, 6)
-      huge_logic.internal_var.should.be.equal 400
+      assert.equal huge_logic.internal_var, 400
       
     it 'should unsubscribe some binded event on some different chanel if callback exists', ->
       dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
       dendrite_obj.unsubscribe('one two three', huge_logic.test_function, huge_logic)
       dendrite_obj.publish('one two three four', 2, 6)
-      huge_logic.internal_var.should.be.equal 44
+      assert.equal huge_logic.internal_var, 44
     
     it 'should unsubscribe subscriptions ONLY if context matched', ->
       dendrite_obj.subscribe('one two three four', huge_logic.test_function, huge_logic)
       dendrite_obj.unsubscribe('one two three', huge_logic.test_function, {})
       dendrite_obj.publish('one two', 2, 6)
-      huge_logic.internal_var.should.be.equal 88
+      assert.equal huge_logic.internal_var, 88
     
     it 'should prevent unsubscribe while publishing ', ->
       dendrite_obj = new Dendrite verbose : 'error'
       handle = dendrite_obj.subscribe('callback_channel', callback_simple)
       # its internal thing, but we are must use it to simulate situation
-      dendrite_obj._publishingInc()
+      dendrite_obj.publishingInc()
       dendrite_obj.unsubscribe(handle)
       dendrite_obj.publish('callback_channel', 'test') # must fired up event
       result_simple.should.be.true
@@ -285,9 +286,9 @@ describe 'Dendrite:', ->
       dendrite_obj = new Dendrite verbose : 'error'
       handle = dendrite_obj.subscribe('callback_channel', callback_simple)
       # its internal thing, but we are must use it to simulate situation
-      dendrite_obj._publishingInc()
+      dendrite_obj.publishingInc()
       dendrite_obj.unsubscribe(handle)
-      dendrite_obj._publishingDec()
+      dendrite_obj.publishingDec()
       dendrite_obj.publish('callback_channel', 'test') # must fired up event
       # yes, we are force re-init variable
       result_simple = false
@@ -398,4 +399,3 @@ describe 'Dendrite:', ->
       dendrite_obj.off 'subscribe'
       dendrite_obj.subscribe 'foo', ->
       process.nextTick done
-

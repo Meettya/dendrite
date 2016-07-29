@@ -1,3 +1,12 @@
+## 0.8.1 / 2016-07-28 18-00 AM
+
+  - Rewrite all to ES6
+  - Update docs
+  - Rebuild node lib
+  - Rebuild browser lib
+  - Change min node version to 0.12
+  - Add travis for all major version
+
 ## 0.7.1 / 2015-03-31 12-40 AM
 
   - Fix bug with unsubscribe from empty (non-subscribed) channel with funtion
