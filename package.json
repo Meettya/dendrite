@@ -33,7 +33,7 @@
     "uglify-js": "*"
   },
   "scripts": {
-    "test": "cake test",
+    "test": "mocha ./test/dendrite-test.coffee",
     "build_lib": "./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
