@@ -1,7 +1,7 @@
 /**
  * **dendrite** - An extended Observer pattern implementation, worked at any JavaScript environment.
  *
- * @version v0.8.1
+ * @version v0.8.3
  * @author Dmitrii Karpich
  * @copyright Dmitrii Karpich (c) 2014-2016 under MIT Licence
  * **GitHub repository** [dendrite](https://github.com/Meettya/dendrite)
