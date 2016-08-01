@@ -274,14 +274,14 @@ class Dendrite {
       },
       async: {
         publish: function (topic, task, data) {
-          setImmediate(function () {
+          setTimeout(function () {
             self.publishFiring(topic, task, data)
-          })
+          }, 0)
         },
         unsubscribe: function () {
-          setImmediate(function () {
+          setTimeout(function () {
             self.unsubscribeResume()
-          })
+          }, 0)
         }
       }
     }
