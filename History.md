@@ -1,4 +1,8 @@
-## 0.8.1 / 2016-07-28 18-00 AM
+## 0.8.3 / 2016-08-01 13-00 AM
+
+  - Revert setImmediate -> setTimeout
+
+## 0.8.1 / 2016-07-28 18-00 PM
 
   - Rewrite all to ES6
   - Update docs
