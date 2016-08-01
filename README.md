@@ -12,7 +12,7 @@ Dendrite was created on base of [JZ-Publish-Subscribe-jQuery-Plugin](https://git
 
 Dendrite was designed as CommonJS module (and now ES6 as well) for node.js. All modern futures are supported from node v0.12, so no additional requirements needed.
 
-For browser usage Dendrite was build as stand-alone file (see [build/dendrite.js](https://github.com/Meettya/dendrite/blob/master/build/dendrite.js) or [build/dendrite.min.js](https://github.com/Meettya/dendrite/blob/master/build/dendrite.min.js) ). For use all modern future in modern browser it will be resolved `setImmediate` dependency, for other browsers may be needed resolve `Symbol, Map, WeakMap` with [babel-polyfill](http://babeljs.io/docs/usage/polyfill/) or [core-js](https://github.com/zloirock/core-js) or another es-6 shim.
+For browser usage Dendrite was build as stand-alone file (see [build/dendrite.js](https://github.com/Meettya/dendrite/blob/master/build/dendrite.js) or [build/dendrite.min.js](https://github.com/Meettya/dendrite/blob/master/build/dendrite.min.js) ). All futures are supported in modern browser as is, for other browsers may be needed resolve `Symbol, Map, WeakMap` with [babel-polyfill](http://babeljs.io/docs/usage/polyfill/) or [core-js](https://github.com/zloirock/core-js) or another es-6 shim.
 
 ## Description:
 
